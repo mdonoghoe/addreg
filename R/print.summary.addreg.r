@@ -1,18 +1,19 @@
 print.summary.addreg <- function(x, digits = max(3L, getOption("digits") - 3L), 
-          signif.stars = getOption("show.signif.stars"), ...) 
+                                 signif.stars = getOption("show.signif.stars"), 
+                                 ...) 
 {
   cat("\nCall:\n", paste(deparse(x$call), sep = "\n", collapse = "\n"), 
       "\n\n", sep = "")
   if (!is.null(x$knots)) {
     cat("Smooth term knots:\n")
-	for(smth in names(x$knots)) {
-		cat(smth, ": ", sep = "")
-		l <- length(x$knots[[smth]])
-		if(l > 10) cat(x$knots[[smth]][1:5], "...", x$knots[[smth]][(l-4):l])
-		else cat(x$knots[[smth]])
-		cat("\n")
-	}
-	cat("\n")
+    for(smth in names(x$knots)) {
+      cat(smth, ": ", sep = "")
+      l <- length(x$knots[[smth]])
+      if(l > 10) cat(x$knots[[smth]][1:5], "...", x$knots[[smth]][(l-4):l])
+      else cat(x$knots[[smth]])
+      cat("\n")
+    }
+    cat("\n")
   }
   cat("Deviance Residuals: \n")
   if (x$df.residual > 5) {
@@ -44,8 +45,8 @@ print.summary.addreg <- function(x, digits = max(3L, getOption("digits") - 3L),
   }
   
   if(!is.null(x$phi)) {
-	se.phi <- sqrt(x$var.phi)
-	dp <- if(!is.nan(se.phi)) max(2 - floor(log10(se.phi)), 0) else max(2 - floor(log10(x$phi)), 0)
+  se.phi <- sqrt(x$var.phi)
+  dp <- if(!is.nan(se.phi)) max(2 - floor(log10(se.phi)), 0) else max(2 - floor(log10(x$phi)), 0)
     cat("\n              phi: ", format(round(x$phi, dp), 
         nsmall = dp), "\n        Std. Err.: ", if(!is.nan(se.phi)) format(round(se.phi, 
         dp), nsmall = dp) else "NA", "\n")
