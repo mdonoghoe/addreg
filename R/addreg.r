@@ -84,7 +84,8 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
       best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2,
                              accelerate, list(control.method))
     else if (family$family == "binomial")
-      best.model <- addbin(Y, X, allref$start.new, control, allref)
+      best.model <- addbin(Y, X, allref$start.new, control, allref, model,
+                           accelerate, control.method)
     best.loglik <- best.model$loglik
     best.param <- 0
     allconv <- best.model$converged
@@ -107,7 +108,8 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
         thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, 
                               control2, accelerate, list(control.method))
       else if (family$family == "binomial")
-        thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref)
+        thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
+                            model, accelerate, control.method)
       if (!thismodel$converged) allconv <- FALSE
       if (control$trace > 0 & control$trace <= 1) 
       if (substr(family$family,1,7) == "negbin1") cat("Log-likelihood =",thismodel$loglik,
