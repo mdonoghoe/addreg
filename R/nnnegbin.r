@@ -145,7 +145,7 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
     mu <- n * fam$linkinv(eta)
     nobs <- NROW(y)
     wts <- rep(1, nobs)
-    dev <- sum(fam$dev.resids(y, mu, wts)
+    dev <- sum(fam$dev.resids(y, mu, wts))
     negll <- fam$aic(y, nobs, mu, wts, dev) / 2
     return(negll)
   }
