@@ -51,24 +51,6 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
     coefold.phi <- 0.5
   }
   
-  coefold.r <- coefold.mu / coefold.phi
-  coefold.p <- coefold.phi / (1 + coefold.phi)
-  r.fits <- standard * drop(x %*% coefold.r)
-  
-  fam <- negbin1(link = identity, phi = coefold.phi)
-  mu.eta <- fam$mu.eta
-  linkinv <- fam$linkinv
-  dev.resids <- fam$dev.resids
-  aic <- fam$aic
-  
-  eta <- drop(x %*% coefold.mu)
-  mu <- standard * linkinv(eta)
-  dev.old <- sum(dev.resids(y, mu, weights))
-  
-  ll.old <- -aic(y, nobs, mu, weights, dev.old)/2
-  
-  if (control$trace) cat("Log-likelihood =", ll.old, "Iterations - 0\n")
-  
   dbetabinom <- function(x, size, alpha, beta) {
     exp(lchoose(size, x) + lbeta(alpha + x, size + beta - x) - lbeta(alpha, beta))
   }
@@ -154,78 +136,43 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
   
   conv.user <- function(old, new) return(conv.test(old[1], new[1], tol) && 
                                          conv.test(old[-1], new[-1], tol))
+                                         
+  res <- turboEM::turboem(par = c(coefold.phi, coefold.mu), fixptfn = fixptfn, objfn = objfn,
+                          method = accelerate, pconstr = validparams, y = y, n = standard,
+                          x = x, score = score, bound.tol = control$bound.tol,
+                          epsilon = control$epsilon,
+                          control.run = list(convtype = "parameter", tol = control$epsilon,
+                                             stoptype = "maxiter", maxiter = control$maxit,
+                                             convfn.user = conv.user, trace = control$trace),
+                          control.method = control.accelerate)
+  coefnew.phi <- res$pars[1,1]
+  coefnew.mu <- res$pars[1,-1]
+  coefnew.r <- coefnew.mu / coefnew.phi
+  coefnew.p <- coefnew.phi / (1 + coefnew.phi)
   
-  for (iter in 1L:control$maxit) {
-    coefmax <- drop(coefold.r * (t(ifelse(r.fits == 0, 0, standard * y / r.fits)) %*% x)
-          / (log(1 / (1 - coefold.p)) * t(standard) %*% x))
-    coefnew.r <- coefold.r
-    for (j in 1L:nvars) {
-      if (coefold.r[j] > control$bound.tol) {
-        score.0 <- score(control$bound.tol / 2, x = x[,j], y = y, std = standard, 
-          theta.old = coefold.r[j], r.fits.old = r.fits, p = coefold.p)
-        score.max <- score(coefmax[j], x = x[,j], y = y, std = standard,
-          theta.old = coefold.r[j], r.fits.old = r.fits, p = coefold.p)
-        if (score.0 <= control$epsilon)
-          coefnew.r[j] <- 0
-        else if (score.max >= 0)
-          coefnew.r[j] <- coefmax[j]
-        else
-          coefnew.r[j] <- uniroot(score, interval = c(control$bound.tol / 2, coefmax[j]),
-            x = x[,j], y = y, std = standard, theta.old = coefold.r[j],
-            r.fits.old = r.fits, p = coefold.p, f.lower = score.0, f.upper = score.max,
-            tol = control$epsilon * 1e-2)$root
-      }
-    }
-    
-    r.fits <- standard * drop(x %*% coefnew.r)
-    coefnew.p <- sum(y) / (sum(y) + sum(r.fits))
-    
-    coefnew.phi <- coefnew.p / (1 - coefnew.p)
-    coefnew.mu <- coefnew.phi * coefnew.r
-    
-    fam <- negbin1(link = identity, phi = coefnew.phi)
-    mu.eta <- fam$mu.eta
-    linkinv <- fam$linkinv
-    dev.resids <- fam$dev.resids
-    aic <- fam$aic
-    
-    eta <- drop(x %*% coefnew.mu)
-    mu <- standard * linkinv(eta)
-    dev.new <- sum(dev.resids(y, mu, weights))
-    ll.new <- -aic(y, nobs, mu, weights, dev.new)/2
-    
-    if (control$trace) cat("Log-likelihood =", ll.new, "Iterations -", iter, "\n")
-    
-        if (conv.test(coefold.mu, coefnew.mu, control$epsilon)
-            && conv.test(coefold.phi, coefnew.phi, control$epsilon)) {
-      converged = TRUE
-      break
-    }
-    
-    coefold.r <- coefnew.r
-    coefold.p <- coefnew.p
-    coefold.mu <- coefnew.mu
-    coefold.phi <- coefnew.phi
-  }
-  
-  residuals <- (y - mu) / mu.eta(eta)
+  fam <- negbin1(link = identity, phi = coefnew.phi)
+  eta <- drop(x %*% coefnew.mu)
+  mu <- standard * fam$linkinv(eta)
+  residuals <- (y - mu) / fam$mu.eta(eta)
   
   names(coefnew.mu) <- xnames
   names(residuals) <- names(mu) <- names(eta) <- names(y) <- ynames
   
-  aic.model <- aic(y, nobs, mu, weights, dev.new) + 2 * (nvars + 1)
+  dev.new <- sum(fam$dev.resids(y, mu, weights))
+  aic.model <- fam$aic(y, nobs, mu, weights, dev.new) + 2 * (nvars + 1)
   aic.c.model <- aic.model + 2 * (nvars + 1) * (nvars + 2) / (nobs - nvars - 1)
   
   wtdmu <- standard * rep(sum(weights * y / standard) / sum(weights), nobs)
-  nulldev <- sum(dev.resids(y, wtdmu, weights))
+  nulldev <- sum(fam$dev.resids(y, wtdmu, weights))
   nulldf <- nobs - 1
   resdf <- nobs - nvars - 1
   
   boundary <- any(coefnew.r < control$bound.tol)
   
-  list(coefficients = coefnew.mu, scale = 1 + coefnew.phi, residuals = residuals, fitted.values = mu,
-    rank = nvars + 1, family = fam, linear.predictors = eta, deviance = dev.new, aic = aic.model,
-    aic.c = aic.c.model, null.deviance = nulldev, iter = iter, weights = weights, prior.weights = weights,
-    standard = standard, df.residual = resdf, df.null = nulldf, y = y, converged = converged, boundary = boundary,
-    loglik = ll.new, nn.design = x)
+  list(coefficients = coefnew.mu, scale = 1 + coefnew.phi, residuals = residuals,
+       fitted.values = mu, rank = nvars + 1, family = fam, linear.predictors = eta, 
+       deviance = dev.new, aic = aic.model, aic.c = aic.c.model, null.deviance = nulldev,
+       iter = res$itr[1], weights = weights, prior.weights = weights, standard = standard, 
+       df.residual = resdf, df.null = nulldf, y = y, converged = res$convergence[1], 
+       boundary = boundary, loglik = -res$value.objfn[1], nn.design = x)
 }
