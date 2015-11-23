@@ -78,9 +78,11 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     if (control$trace > 0) cat(method,"parameterisation 1/1\n")
     X <- model.matrix(allref$terms, allref$data)
     if (family$family == "poisson")
-      best.model <- nnpois(Y, X, standard, offset, allref$start.new, control2)
+      best.model <- nnpois(Y, X, standard, offset, allref$start.new, control2,
+                           accelerate, list(control.method))
     else if (substr(family$family,1,7) == "negbin1")
-      best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2)
+      best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2,
+                             accelerate, list(control.method))
     else if (family$family == "binomial")
       best.model <- addbin(Y, X, allref$start.new, control, allref)
     best.loglik <- best.model$loglik
@@ -99,9 +101,11 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
       if (control$trace > 0) cat(method," parameterisation ",param,"/",nparam,"\n",sep="")
       X <- addreg.design(allref$terms, allref$data, allref$allref, design.all[param,])
       if (family$family == "poisson")
-        thismodel <- nnpois(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, control2, accelerate, list(control.method))
+        thismodel <- nnpois(Y, X, standard, offset, if (param == 1) allref$start.new else NULL,
+                            control2, accelerate, list(control.method))
       else if (substr(family$family,1,7) == "negbin1")
-        thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, control2)
+        thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, 
+                              control2, accelerate, list(control.method))
       else if (family$family == "binomial")
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref)
       if (!thismodel$converged) allconv <- FALSE
