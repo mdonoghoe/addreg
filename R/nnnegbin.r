@@ -1,6 +1,12 @@
-nnnegbin <- function(y, x, standard, offset, start, control = list())
+utils::globalVariables("tol")
+
+nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
+                     accelerate = c("em", "squarem", "pem", "qn"),
+                     control.accelerate = list(list()))
 {
   control <- do.call("addreg.control", control)
+  accelerate <- match.arg(accelerate)
+  
   x <- as.matrix(x)
   xnames <- dimnames(x)[[2L]]
   ynames <- if (is.matrix(y))
