@@ -13,8 +13,9 @@ Additive Regression for Discrete Data
 }
 \usage{
 addreg(formula, mono = NULL, family, data, standard, subset, na.action,
-       start = NULL, offset, control = list(...), model = TRUE, warn = TRUE,
-       ...)
+       start = NULL, offset, control = list(...), model = TRUE, 
+       accelerate = c("em", "squarem", "pem", "qn"), control.method = list(),
+       warn = TRUE, ...)
 }
 \arguments{
   \item{formula}{
@@ -86,7 +87,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   specified their sum is used. See
   \code{\link{model.offset}}.
   
-	Ignored for binomial family.
+	Ignored for binomial family; not yet implemented for negative binomial models.
 }
   \item{control}{
 	list of parameters for controlling the
@@ -97,6 +98,18 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
 	a logical value indicating whether the \emph{model frame} 
 	(and, for binomial models, the equivalent Poisson model)
 	should be included as a component of the returned value.
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration --- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+}
+  \item{control.method}{
+    a list of control parameters for the acceleration algorithm --- passed to 
+    the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
+  
+    If any items are not specified, the defaults are used.
 }
   \item{warn}{
 	a logical indicating whether or not warnings should be
@@ -151,6 +164,13 @@ restricted maxima of the log-likelihood function, from
 which can be obtained the global maximum over the full
 parameter space. See Marschner (2010) and Donoghoe and 
 Marschner (2014) for further details.
+
+Acceleration of the EM algorithm can be achieved through the
+methods of the \code{\link[turboEM]{turboem}} package, specified
+through the \code{accelerate} argument. However, note that these
+methods do not have the guaranteed convergence of the standard
+EM algorithm, particularly when the MLE is on the boundary of
+its (possibly constrained) parameter space.
 }
 \value{
 \code{addreg} returns an object of class \code{"addreg"},

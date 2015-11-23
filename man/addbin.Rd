@@ -8,7 +8,8 @@ Workhorse function for \code{\link{addreg}} with
 \code{binomial} family.
 }
 \usage{
-addbin(y, x, start = NULL, control = list(), allref)
+addbin(y, x, start = NULL, control = list(), allref,
+       model = TRUE, accelerate, control.method)
 }
 \arguments{
   \item{y}{
@@ -32,6 +33,22 @@ addbin(y, x, start = NULL, control = list(), allref)
   \item{allref}{
 	a list of all parameterisations for this
   model, obtained from \code{\link{addreg.allref}}.
+}
+  \item{model}{
+    a logical value indicating whether the \emph{model frame} 
+	should be included as a component of the returned value
+    (as \code{model.addpois$model}).
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration -- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+  Passed directly to \code{\link{addreg}}.
+}
+  \item{control.accelerate}{
+	a list of control parameters for the acceleration algorithm. See \code{\link[turboEM]{turboem}}
+	for details of the parameters that apply to each algorithm. If not specified, the defaults are used. Passed directly to \code{\link{addreg}}.
 }
 }
 \details{

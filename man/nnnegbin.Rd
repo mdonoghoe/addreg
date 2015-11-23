@@ -10,7 +10,8 @@ where each of the mean coefficients is restricted to be non-negative.
 }
 \usage{
 nnnegbin(y, x, standard, offset, start, control = addreg.control(),
-         accelerate = c("em", "squarem", "pem", "qn"))
+         accelerate = c("em", "squarem", "pem", "qn"),
+         control.accelerate = list(list()))
 }
 \arguments{
   \item{y}{
