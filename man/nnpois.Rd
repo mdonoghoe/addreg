@@ -10,7 +10,7 @@ where each of the coefficients is restricted to be non-negative.
 }
 \usage{
 nnpois(y, x, standard, offset, start, control = addreg.control(),
-       accelerate = c(""em", "squarem", "pem", "qn"),
+       accelerate = c("em", "squarem", "pem", "qn"),
        control.accelerate = list(list()))
 }
 \arguments{
