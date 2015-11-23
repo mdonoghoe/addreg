@@ -26,7 +26,6 @@ nnpois <- function(y, x, standard, offset, start, control = addreg.control(),
   linkinv <- fam$linkinv
   dev.resids <- fam$dev.resids
   aic <- fam$aic
-  loglik <- function(y, mu) sum(y*log(mu) - mu - lgamma(y+1))
   
   weights <- rep(1, nobs)
   if (is.null(standard)) standard <- rep.int(1, nobs)
@@ -43,69 +42,70 @@ nnpois <- function(y, x, standard, offset, start, control = addreg.control(),
             domain = NA)
     else if(any(start <= control$bound.tol))
         stop("'start' is on our outside the boundary of the parameter space (consider 'bound.tol')", domain = NA)
-	else start
-    } else {
-        simple <- mean(y / standard) / colMeans(x) + 2*control$bound.tol
-        trymat <- tryCatch(as.vector(solve(t(x)%*%x) %*% t(x) %*% (y)) + 2*control$bound.tol, error = function(e) NULL)
-        if(is.null(trymat)) simple
-        else if(any(trymat < control$bound.tol)) simple
-        else trymat
-    }
-
-  eta <- drop(x %*% coefold) + offset
-  mu <- standard * linkinv(eta)
-  dev.old <- sum(dev.resids(y, mu, weights))
+    else start
+  } else {
+    simple <- mean(y / standard) / colMeans(x) + 2*control$bound.tol
+    trymat <- tryCatch(as.vector(solve(t(x)%*%x) %*% t(x) %*% (y)) + 2*control$bound.tol,
+                       error = function(e) NULL)
+    if(is.null(trymat)) simple
+    else if(any(trymat < control$bound.tol)) simple
+    else trymat
+  }
   
-  if(control$trace) cat("Deviance =", dev.old, "Iterations - 0\n")
+  fixptfn <- function(p, y, n, x, o, div, fam, bound.tol) {
+    eta <- drop(x %*% p) + o
+    y.over.fits <- y / fam$linkinv(eta)
+    y.over.fits[fam$linkinv(eta) == 0] <- 0
+    pnew <- p * colSums(y.over.fits * x) * div
+    pnew[pnew <= 0] <- bound.tol / 2
+    return(pnew)
+  }
+  
+  objfn <- function(p, y, x, o, div, fam, bound.tol) {
+    eta <- drop(x %*% p) + o
+    mu <- n * fam$linkinv(eta)
+    negll <- -sum(dpois(y, mu, log = TRUE))
+    return(negll)
+  }
+  
+  validparams <- function(p) return(all(p >= 0))
+  
+  conv.user <- function(old, new) return(conv.test(old, new, tol))
   
   std.div <- 1 / colSums(standard * x)
   
-  for(iter in 1L:control$maxit) {
-    
-    y.over.fits <- y / linkinv(eta)
-    y.over.fits[linkinv(eta)==0] <- 0
-    
-    coefnew <- coefold * colSums(y.over.fits * x) * std.div
-    
-    eta <- drop(x %*% coefnew) + offset
-    mu <- standard * linkinv(eta)
-    dev.new <- sum(dev.resids(y, mu, weights))
-    
-    ll.new <- loglik(y, mu)
-    
-    if(control$trace) cat("Deviance =", dev.new, "Iterations -", iter, "\n")
-    
-    if(conv.test(coefold, coefnew, control$epsilon)) {
-      converged = TRUE
-      break
-    }
-    
-    coefold <- coefnew
-    dev.old <- dev.new
-  }
-  
-  residuals <- (y-mu)/mu.eta(eta)
-  
+  res <- turboEM::turboem(par = coefold, fixptfn = fixptfn, objfn = objfn, method = accelerate,
+                          pconstr = validparams, y = y, n = standard, x = x, o = offset,
+                          div = std.div, fam = fam, bound.tol = control$bound.tol,
+                          control.run = list(convtype = "parameter", tol = control$epsilon,
+                                             stoptype = "maxiter", maxiter = control$maxit,
+                                             convfn.user = conv.user, trace = control$trace),
+                          control.method = control.accelerate)
+  coefnew <- res$pars[1,]
   names(coefnew) <- xnames
-  names(residuals) <- ynames
-  names(mu) <- ynames
-  names(eta) <- ynames
-  names(y) <- ynames
+
+  eta <- drop(x %*% coefnew) + offset
+  mu <- standard * linkinv(eta)
+  residuals <- (y - mu) / mu.eta(eta)
   
+  names(y) <- names(mu) <- names(eta) <- names(residuals) <- ynames
+  
+  dev.new <- sum(dev.resids(y, mu, weights))  
   aic.model <- aic(y, nobs, mu, weights, dev.new) + 2 * nvars
   aic.c.model <- aic.model + 2 * nvars * (nvars + 1) / (nobs - nvars - 1)
   
-  wtdmu <- standard * sum(weights * y / standard)/sum(weights)
+  wtdmu <- standard * sum(weights * y / standard) / sum(weights)
   nulldev <- sum(dev.resids(y, wtdmu, weights))
   nulldf <- nobs - 1
   resdf <- nobs - nvars
   
   boundary <- any(coefnew < control$bound.tol)
   
-  list(coefficients = coefnew, residuals = residuals, fitted.values = mu, rank = nvars, family = fam,
-       linear.predictors = eta, deviance = dev.new, aic = aic.model, aic.c = aic.c.model,
-       null.deviance = nulldev, iter = iter, weights = weights, prior.weights = weights,
-       standard = standard, df.residual = resdf, df.null = nulldf, y = y, 
-       converged = converged, boundary = boundary, loglik = ll.new, nn.design = x)
+  list(coefficients = coefnew, residuals = residuals, fitted.values = mu, rank = nvars, 
+       family = fam, linear.predictors = eta, deviance = dev.new, aic = aic.model, 
+       aic.c = aic.c.model, null.deviance = nulldev, iter = res$itr[1], weights = weights,
+       prior.weights = weights, standard = standard, df.residual = resdf, df.null = nulldf, 
+       y = y, converged = res$convergence[1], boundary = boundary, 
+       loglik = -res$value.objfn[1], nn.design = x)
   
 }
