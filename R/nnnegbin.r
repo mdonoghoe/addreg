@@ -150,7 +150,7 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
     return(negll)
   }
   
-  validparams <- function(p) return(all(p[-1] >= 0) && p[1] >= 0 && p[1] <= 1)
+  validparams <- function(p) return(all(p >= 0) && p[1] <= 1)
   
   conv.user <- function(old, new) return(conv.test(old[1], new[1], tol) && 
                                          conv.test(old[-1], new[-1], tol))
