@@ -78,12 +78,12 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
     sum(1 / (r + k))
   }
     
-    digammaexp <- function(y, r, r.part, r.full) {
-        k <- seq_len(y)
-        rdiff <- cumsum(1 / (r + k - 1))
-        prob <- sapply(k, dbetabinom, size = y, alpha = r.part, beta = r.full - r.part)
-        sum(rdiff * prob)
-    }
+  digammaexp <- function(y, r, r.part, r.full) {
+    k <- seq_len(y)
+    rdiff <- cumsum(1 / (r + k - 1))
+    prob <- sapply(k, dbetabinom, size = y, alpha = r.part, beta = r.full - r.part)
+    sum(rdiff * prob)
+  }
   
   estep <- function(theta, x, y, std, theta.old, r.fits.old) {
     res <- rep(0, length(y))
@@ -105,6 +105,55 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
     sum(std[x > 0] * x[x > 0] * (estep(theta, x[x > 0], y[x > 0], std[x > 0], theta.old,
       r.fits.old[x > 0]) + log(1 - p)))
   }
+  
+  fixptfn <- function(p, y, n, x, score, bound.tol, epsilon) {
+    c.phi <- p[1]
+    c.mu <- p[-1]
+    c.r <- c.mu / c.phi
+    c.p <- c.phi / (c.phi + 1)
+    r.fit <- n * drop(x %*% c.r)
+    c.max <- drop(c.r * (t(ifelse(r.fit == 0, 0, n * y / r.fit)) %*% x)
+                    / (log(1 / (1 - c.p)) * t(n) %*% x))
+    for (j in 1L:length(c.r)) {
+      if (c.r[j] > bound.tol) {
+        score.0 <- score(bound.tol / 2, x = x[,j], y = y, std = n, theta.old = c.r[j],
+                         r.fits.old = r.fit, p = c.p)
+        score.max <- score(c.max[j], x = x[,j], y = y, std = n, theta.old = c.r[j],
+                           r.fits.old = r.fit, p = c.p)
+        if (score.0 <= epsilon)
+          c.r[j] <- 0
+        else if (score.max >= 0)
+          c.r[j] <- c.max[j]
+        else
+          c.r[j] <- uniroot(score, interval = c(bound.tol / 2, c.max[j]), x = x[,j],
+                            y = y, std = n, theta.old = c.r[j], r.fits.old = r.fit,
+                            p = c.p, f.lower = score.0, f.upper = score.max,
+                            tol = epsilon * 1e-2)$root
+      }
+    }
+    r.fit <- n * drop(x %*% c.r)
+    c.p <- sum(y) / (sum(y) + sum(r.fit))
+    c.phi <- c.p / (1 - c.p)
+    c.mu <- c.phi * c.r
+    pnew <- c(c.phi, c.mu)
+    return(pnew)
+  }
+  
+  objfn <- function(p, y, n, x, score, bound.tol, epsilon) {
+    fam <- negbin1(link = identity, phi = p[1])
+    eta <- drop(x %*% p[-1])
+    mu <- n * fam$linkinv(eta)
+    nobs <- NROW(y)
+    wts <- rep(1, nobs)
+    dev <- sum(fam$dev.resids(y, mu, wts)
+    negll <- fam$aic(y, nobs, mu, wts, dev) / 2
+    return(negll)
+  }
+  
+  validparams <- function(p) return(all(p[-1] >= 0) && p[1] >= 0 && p[1] <= 1)
+  
+  conv.user <- function(old, new) return(conv.test(old[1], new[1], tol) && 
+                                         conv.test(old[-1], new[-1], tol))
   
   for (iter in 1L:control$maxit) {
     coefmax <- drop(coefold.r * (t(ifelse(r.fits == 0, 0, standard * y / r.fits)) %*% x)
