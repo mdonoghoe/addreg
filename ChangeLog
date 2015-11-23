@@ -1,5 +1,8 @@
-﻿**  denotes quite substantial/important changes
+**  denotes quite substantial/important changes
 *** denotes really big changes 
+
+3.0
+*   Change iter return to vector of two values
 
 2.0
 

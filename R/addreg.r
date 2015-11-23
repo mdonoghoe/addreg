@@ -73,6 +73,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
   best.loglik <- -Inf
   best.param <- NULL
   allconv <- TRUE
+  totaliter <- 0
     
   if (length(allref$allref) == 0) {
     if (control$trace > 0) cat(method,"parameterisation 1/1\n")
@@ -89,6 +90,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     best.loglik <- best.model$loglik
     best.param <- 0
     allconv <- best.model$converged
+    totaliter <- totaliter + best.model$iter
     if (control$trace > 0 & control$trace <= 1)
     if (substr(family$family,1,7) == "negbin1") cat("Log-likelihood =",best.model$loglik,
                                                     "Iterations -",best.model$iter,"\n")
@@ -111,6 +113,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
                             model, accelerate, control.method)
       if (!thismodel$converged) allconv <- FALSE
+      totaliter <- totaliter + thismodel$iter
       if (control$trace > 0 & control$trace <= 1) 
       if (substr(family$family,1,7) == "negbin1") cat("Log-likelihood =",thismodel$loglik,
                                                       "Iterations -",thismodel$iter,"\n")
@@ -166,7 +169,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
                linear.predictors = best.model$linear.predictors,
                deviance = best.model$deviance, loglik = best.model$loglik,
                aic = best.model$aic, aic.c = best.model$aic.c,
-               null.deviance = best.model$null.deviance, iter = best.model$iter,
+               null.deviance = best.model$null.deviance, iter = c(totaliter,best.model$iter),
                prior.weights = best.model$prior.weights, weights = rep(1,NROW(Y)),
                df.residual = best.model$df.residual, df.null = best.model$df.null,
                y = best.model$y, x = design)

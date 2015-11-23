@@ -90,7 +90,7 @@ addbin <- function(y, x, start = NULL, control = list(), allref,
        rank = model.addpois$rank - 1, family = fam, 
        linear.predictors = model.addpois$linear.predictors[1:nobs],
        deviance = model.addpois$deviance, aic = aic.bin, aic.c = aic.c.bin, 
-       null.deviance = nulldev, iter = model.addpois$iter, weights = weights,
+       null.deviance = nulldev, iter = model.addpois$iter[1], weights = weights,
        prior.weights = n, df.residual = resdf, df.null = nulldf,
        y = y, converged = model.addpois$converged, boundary = model.addpois$boundary,
        loglik = loglik.bin, model.addpois = model.addpois)
