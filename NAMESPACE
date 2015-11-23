@@ -1,4 +1,4 @@
-import(combinat, splines, glm2)
+import(combinat, splines, glm2, turboEM)
 S3method(confint,addreg)
 S3method(anova,addreg)
 S3method(anova,addreglist)
