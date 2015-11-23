@@ -61,7 +61,7 @@ nnpois <- function(y, x, standard, offset, start, control = addreg.control(),
     return(pnew)
   }
   
-  objfn <- function(p, y, x, o, div, fam, bound.tol) {
+  objfn <- function(p, y, n, x, o, div, fam, bound.tol) {
     eta <- drop(x %*% p) + o
     mu <- n * fam$linkinv(eta)
     negll <- -sum(dpois(y, mu, log = TRUE))
