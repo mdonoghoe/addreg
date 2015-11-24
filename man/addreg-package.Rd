@@ -12,8 +12,8 @@ algorithms with more stable convergence properties than standard methods.
 \tabular{ll}{
 Package: \tab addreg\cr
 Type: \tab Package\cr
-Version: \tab 2.0\cr
-Date: \tab 2015-05-12\cr
+Version: \tab 3.0\cr
+Date: \tab 2015-11-24\cr
 License: \tab GPL (>= 2)\cr
 }
 This package provides methods to fit generalised linear models (GLMs) and generalised additive
@@ -35,6 +35,9 @@ which covers the full parameter space, and the EM algorithm is applied within ea
 restricted parameter space in order to find a collection of restricted maxima of
 the log-likelihood function, from which can be obtained the global maximum over the
 full parameter space.
+
+The EM algorithm may be accelerated by using the capabilities of the 
+\code{\link[turboEM]{turboem}} package.
 }
 \author{
 Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
