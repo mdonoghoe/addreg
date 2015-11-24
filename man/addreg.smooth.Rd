@@ -12,7 +12,8 @@ terms.
 \usage{
 addreg.smooth(formula, mono = NULL, family, data, standard, subset, 
               na.action, offset, control = list(...), model = TRUE, 
-              model.addreg = FALSE, ...)
+              accelerate = c("em", "squarem", "pem", "qn"),
+              control.accelerate = list(), model.addreg = FALSE, ...)
 }
 \arguments{
   \item{formula}{
@@ -81,7 +82,7 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
   specified their sum is used. See
   \code{\link{model.offset}}.
   
-	Ignored for binomial family.
+	Ignored for binomial family; not yet implemented for negative binomial models.
 }
   \item{control}{
 	list of parameters for controlling the
@@ -92,6 +93,18 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
 	a logical value indicating whether the \emph{model frame} 
 	(and, for binomial models, the equivalent Poisson model)
 	should be included as a component of the returned value.
+}
+  \item{accelerate}{
+    a character string that determines the acceleration
+  algorithm to be used, (partially) matching one of \code{"em"} (no acceleration --- the default), 
+  \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
+  for further details. Note that \code{"decme"} is not permitted.
+}
+  \item{control.accelerate}{
+    a list of control parameters for the acceleration algorithm --- passed to 
+    the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
+  
+    If any items are not specified, the defaults are used.
 }
   \item{model.addreg}{
 	a logical value indicating whether the fitted \code{addreg}
@@ -114,6 +127,13 @@ The method partitions the parameter space associated with the semi-parametric pa
 model into a sequence of constrained parameter spaces, and defines a fully parametric 
 \code{addreg} model for each. The model with the highest log-likelihood is the MLE for 
 the semi-parametric model (see Donoghoe and Marschner, 2015).
+
+Acceleration of the EM algorithm can be achieved through the
+methods of the \code{\link[turboEM]{turboem}} package, specified
+through the \code{accelerate} argument. However, note that these
+methods do not have the guaranteed convergence of the standard
+EM algorithm, particularly when the MLE is on the boundary of
+its (possibly constrained) parameter space.
 }
 \value{
 An object of class \code{"addreg.smooth"}, which contains the same objects as class
