@@ -106,7 +106,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   for further details. Note that \code{"decme"} is not permitted.
 }
   \item{control.method}{
-    a list of control parameters for the acceleration algorithm --- passed to 
+    a list of control parameters for the acceleration algorithm, which are passed to 
     the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
   
     If any items are not specified, the defaults are used.
@@ -166,7 +166,7 @@ parameter space. See Marschner (2010) and Donoghoe and
 Marschner (2014) for further details.
 
 Acceleration of the EM algorithm can be achieved through the
-methods of the \code{\link[turboEM]{turboem}} package, specified
+methods of the \pkg{\link[turboEM:turboem]{turboEM}} package, specified
 through the \code{accelerate} argument. However, note that these
 methods do not have the guaranteed convergence of the standard
 EM algorithm, particularly when the MLE is on the boundary of

@@ -36,8 +36,7 @@ restricted parameter space in order to find a collection of restricted maxima of
 the log-likelihood function, from which can be obtained the global maximum over the
 full parameter space.
 
-The EM algorithm may be accelerated by using the capabilities of the 
-\code{\link[turboEM]{turboem}} package.
+The EM algorithm may be accelerated by using the capabilities of the \pkg{\link[turboEM:turboem]{turboEM}} package.
 }
 \author{
 Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
