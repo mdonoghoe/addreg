@@ -83,7 +83,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
                      mono = eval(modelspec$monotonic), family = famname, 
                      data = as.name("data.new"), control = control2, 
                      warn = FALSE, fit = TRUE, accelerate = accelerate,
-                     control.method = control.accelerate)
+                     control.accelerate = control.accelerate)
       if (!is.null(os)) modelf$offset <- as.name("(offset)")
       if (!is.null(std)) modelf$standard <- as.name("(standard)")
       if (!missing(subset)) modelf$subset <- subset
