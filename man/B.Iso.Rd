@@ -33,9 +33,8 @@ Iso(...)
 }
 \details{
 The function does not evaluate the variable arguments; the
-output from this function is passed as part of the
-arguments to \code{\link{addreg.smooth.design}}, which
-constructs the actual basis functions.
+output from this function is used when producing the model
+matrix, at which point the actual basis functions are constructed.
 
 \code{B} is used to specify an order-3 B-spline basis (which can be
 restricted to be monotonically non-decreasing via the
@@ -68,8 +67,7 @@ Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 
 \seealso{
-\code{\link{addreg.smooth}},
-\code{\link{addreg.smooth.design}}
+\code{\link{addreg.smooth}}
 
 \code{\link[mgcv]{s}} performs a similar function in the \code{\link[mgcv]{mgcv}} package.
 }

@@ -5,8 +5,8 @@ Auxiliary for Controlling addreg Fitting
 }
 \description{
 Auxiliary function for \code{\link{addreg}} fitting.
-Typically only used internally by \code{\link{nnpois}},
-\code{\link{nnnegbin}} and \code{\link{addbin}}, but may 
+Typically only used internally by \code{\link{nnpois}} and 
+\code{\link{nnnegbin}}, but may 
 be used to construct a \code{control} argument to these functions.
 }
 \usage{
@@ -44,7 +44,7 @@ addreg.control(bound.tol = 1e-06, epsilon = 1e-10, maxit = 10000, trace = 0)
 This is used similarly to \code{\link{glm.control}}. The
 \code{control} argument of \code{\link{addreg}} is by
 default passed to the \code{control} argument of
-\code{\link{nnpois}}, \code{\link{nnnegbin}} or \code{\link{addbin}}.
+\code{\link{nnpois}} or \code{\link{nnnegbin}}.
 
 When \code{trace} is greater than zero, calls to
 \code{\link{cat}} produce the output. Hence,
@@ -63,7 +63,7 @@ Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 \code{\link{glm.control}}, the equivalent function for
 \code{\link{glm}} fitting.
 
-\code{\link{nnpois}}, \code{\link{nnnegbin}} and \code{\link{addbin}}, the
+\code{\link{nnpois}} and \code{\link{nnnegbin}}, the
 functions used to fit \code{\link{addreg}} models.
 }
 \examples{

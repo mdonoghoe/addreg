@@ -32,7 +32,7 @@ contr.isotonic(n, perm, contrasts = TRUE, sparse = FALSE)
 }
 }
 \details{
-This function is used within \code{\link{addreg.design}}
+This function is used in creating the design matrix
 for categorical covariates with a specified order under a
 particular parameterisation. For Poisson and negative binomial models, this
 occurs if a categorical covariate is defined as monotonic;
@@ -62,9 +62,8 @@ A matrix with \code{n} rows and \code{k} columns, with
 Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
 }
 \seealso{
-\code{\link{addreg.design}}, which uses
-\code{contr.isotonic} to create the design matrix using
-\code{\link{model.matrix}}.
+\code{\link{model.matrix}}, which uses
+\code{contr.isotonic} to create the design matrix.
 
 \code{\link{contr.treatment}}, \code{\link{contrasts}} for
 their usual use in regression models.
