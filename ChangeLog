@@ -2,6 +2,7 @@
 *** denotes really big changes 
 
 3.0
+
 *** Use turboEM to allow acceleration of EM algorithm
 *   Change iter return to vector of two values
 
