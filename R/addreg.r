@@ -1,7 +1,7 @@
 addreg <- function (formula, mono = NULL, family, data, standard, subset, na.action, 
                     start = NULL, offset, control = list(...), model = TRUE, 
-                    accelerate = c("em", "squarem", "pem", "qn"), control.method = list(),
-                    warn = TRUE, ...) {
+                    accelerate = c("em", "squarem", "pem", "qn"), 
+                    control.accelerate = list(), warn = TRUE, ...) {
   call <- match.call()
   accelerate <- match.arg(accelerate)
   
@@ -80,13 +80,13 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     X <- model.matrix(allref$terms, allref$data)
     if (family$family == "poisson")
       best.model <- nnpois(Y, X, standard, offset, allref$start.new, control2,
-                           accelerate, list(control.method))
+                           accelerate, list(control.accelerate))
     else if (substr(family$family,1,7) == "negbin1")
       best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2,
-                             accelerate, list(control.method))
+                             accelerate, list(control.accelerate))
     else if (family$family == "binomial")
       best.model <- addbin(Y, X, allref$start.new, control, allref, model,
-                           accelerate, control.method)
+                           accelerate, control.accelerate)
     best.loglik <- best.model$loglik
     best.param <- 0
     allconv <- best.model$converged
@@ -105,13 +105,13 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
       X <- addreg.design(allref$terms, allref$data, allref$allref, design.all[param,])
       if (family$family == "poisson")
         thismodel <- nnpois(Y, X, standard, offset, if (param == 1) allref$start.new else NULL,
-                            control2, accelerate, list(control.method))
+                            control2, accelerate, list(control.accelerate))
       else if (substr(family$family,1,7) == "negbin1")
         thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL, 
-                              control2, accelerate, list(control.method))
+                              control2, accelerate, list(control.accelerate))
       else if (family$family == "binomial")
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
-                            model, accelerate, control.method)
+                            model, accelerate, control.accelerate)
       if (!thismodel$converged) allconv <- FALSE
       totaliter <- totaliter + thismodel$iter
       if (control$trace > 0 & control$trace <= 1) 

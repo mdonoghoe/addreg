@@ -14,8 +14,8 @@ Additive Regression for Discrete Data
 \usage{
 addreg(formula, mono = NULL, family, data, standard, subset, na.action,
        start = NULL, offset, control = list(...), model = TRUE, 
-       accelerate = c("em", "squarem", "pem", "qn"), control.method = list(),
-       warn = TRUE, ...)
+       accelerate = c("em", "squarem", "pem", "qn"), 
+       control.accelerate = list(), warn = TRUE, ...)
 }
 \arguments{
   \item{formula}{
@@ -105,7 +105,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
   for further details. Note that \code{"decme"} is not permitted.
 }
-  \item{control.method}{
+  \item{control.accelerate}{
     a list of control parameters for the acceleration algorithm, which are passed to 
     the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
   
