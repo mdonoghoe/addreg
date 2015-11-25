@@ -9,7 +9,7 @@ Workhorse function for \code{\link{addreg}} with
 }
 \usage{
 addbin(y, x, start = NULL, control = list(), allref,
-       model = TRUE, accelerate, control.method)
+       model = TRUE, accelerate, control.accelerate)
 }
 \arguments{
   \item{y}{
@@ -48,7 +48,8 @@ addbin(y, x, start = NULL, control = list(), allref,
 }
   \item{control.accelerate}{
 	a list of control parameters for the acceleration algorithm. See \code{\link[turboEM]{turboem}}
-	for details of the parameters that apply to each algorithm. If not specified, the defaults are used. Passed directly to \code{\link{addreg}}.
+	for details of the parameters that apply to each algorithm. If not specified, the defaults are used. 
+	Passed directly to \code{\link{addreg}}.
 }
 }
 \details{
