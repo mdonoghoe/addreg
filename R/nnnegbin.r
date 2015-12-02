@@ -145,6 +145,7 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
                                              stoptype = "maxiter", maxiter = control$maxit,
                                              convfn.user = conv.user, trace = control$trace),
                           control.method = control.accelerate)
+  if (res$fail[1]) stop(res$errors[1])
   coefnew.phi <- res$pars[1,1]
   coefnew.mu <- res$pars[1,-1]
   coefnew.r <- coefnew.mu / coefnew.phi
