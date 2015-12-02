@@ -1,42 +1,43 @@
-addreg.allref <- function(object, data = environment(object), mono, family, start = NULL) {
-    t <- if(missing(data))
-        terms(object)
-    else terms(object, data = data)
-    if(is.null(attr(data, "terms")))
-        data <- model.frame(object, data)
-    else {
-        reorder = match(sapply(attr(t, "variables"), deparse,
-            width.cutoff = 500)[-1L], names(data))
-        if (any(is.na(reorder)))
-            stop("model frame and formula mismatch in addreg.allref()")
-        if(!identical(reorder, seq_len(ncol(data))))
-            data <- data[, reorder, drop = FALSE]
-    }
-    int <- attr(t, "response")
+addreg.allref <- function(object, data = environment(object), type = c("cem"), mono, family, start = NULL) {
+  type <- match.arg(type)
+  t <- if(missing(data))
+    terms(object)
+  else terms(object, data = data)
+  if(is.null(attr(data, "terms")))
+    data <- model.frame(object, data)
+  else {
+    reorder = match(sapply(attr(t, "variables"), deparse,
+                    width.cutoff = 500)[-1L], names(data))
+    if (any(is.na(reorder)))
+      stop("model frame and formula mismatch in addreg.allref()")
+    if(!identical(reorder, seq_len(ncol(data))))
+      data <- data[, reorder, drop = FALSE]
+  }
+  int <- attr(t, "response")
 	os <- attr(t, "offset")
     
-    namD <- names(data)
-    for (i in namD) if (is.character(data[[i]]))
-        data[[i]] <- factor(data[[i]])
-    isF <- vapply(data, function(x) is.factor(x) || is.logical(x), NA)
-    isF[int] <- FALSE
+  namD <- names(data)
+  for (i in namD) if (is.character(data[[i]]))
+    data[[i]] <- factor(data[[i]])
+  isF <- vapply(data, function(x) is.factor(x) || is.logical(x), NA)
+  isF[int] <- FALSE
 	if(!is.null(os)) isF <- isF[-os]
     
 	termlist <- attr(t, "term.labels")
-    nvar <- length(termlist)
+  nvar <- length(termlist)
 	
 	npar <- sum(as.numeric(!isF))
 	if (any(isF)) npar <- npar + sum(sapply(data[isF], function(x) nlevels(factor(x)) - 1))
 	if (substr(family$family,1,7) == "negbin1") npar <- npar + 1
     
-    if (missing(mono)) mono <- rep(FALSE, nvar)
-    if (is.null(mono)) mono <- rep(FALSE, nvar)
-    monotonic <- rep(FALSE, nvar)
-    names(monotonic) <- termlist
-    monotonic[mono] <- TRUE
+  if (missing(mono)) mono <- rep(FALSE, nvar)
+  if (is.null(mono)) mono <- rep(FALSE, nvar)
+  monotonic <- rep(FALSE, nvar)
+  names(monotonic) <- termlist
+  monotonic[mono] <- TRUE
 	names(monotonic) <- termlist
     
-    allref <- list()
+  allref <- list()
 	
 	start.new.scale <- NULL
 	
@@ -57,11 +58,12 @@ addreg.allref <- function(object, data = environment(object), mono, family, star
 		start.new.other <- NULL
 	}
     
-    if (nvar == 0) return(list(allref = allref, terms = t, data = data, monotonic = monotonic, start.new = start))
-    for (term in termlist) {
+  if (nvar == 0) return(list(allref = allref, terms = t, data = data, monotonic = monotonic, 
+                             start.new = start))
+  for (term in termlist) {
 		allref[[term]] <- list()
 		term2 <- gsub("`","",term)
-        if (!isF[term2]) {
+    if (!isF[term2]) {
 			cont.min <- min(data[[term2]])
 			cont.max <- max(data[[term2]])
 			if (!is.null(start)) {
@@ -82,11 +84,11 @@ addreg.allref <- function(object, data = environment(object), mono, family, star
 						start.new.other[this.start-1] <- start.orig[this.start]
 					}
 				} else {
-                    allref[[term]][[1]] <- 1
-                    start.new.int <- start.new.int + start.orig[this.start] * cont.min
-                    start.new.other[this.start-1] <- start.orig[this.start]
-                }
-				this.start <- this.start + 1
+          allref[[term]][[1]] <- 1
+          start.new.int <- start.new.int + start.orig[this.start] * cont.min
+          start.new.other[this.start-1] <- start.orig[this.start]
+        }
+			this.start <- this.start + 1
 			} else {
 				allref[[term]][[1]] <- 1
 				if(family$family != "binomial" & !monotonic[term]) allref[[term]][[2]] <- 2
@@ -126,6 +128,7 @@ addreg.allref <- function(object, data = environment(object), mono, family, star
 				attr(allref[[term]], "type") <- 3
 			}
 		}
-    }
-    list(allref = allref, terms = t, data = data, monotonic = monotonic, start.new = c(start.new.int, start.new.other, start.new.scale))
+  }
+  list(allref = allref, terms = t, data = data, monotonic = monotonic, 
+       start.new = c(start.new.int, start.new.other, start.new.scale))
 }
