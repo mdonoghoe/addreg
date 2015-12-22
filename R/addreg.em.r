@@ -33,7 +33,7 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
     else if (method != "addbin")
       cat("Deviance =", thismodel$deviance, "Iterations -", thismodel$iter, "\n")
 
-  if (length(allref$allref == 0)) {
+  if (length(allref$allref) == 0) {
     nn.coefs <- coefs <- coefs.boundary <- thismodel$coefficients
     nn.design <- design <- X
   } else {
