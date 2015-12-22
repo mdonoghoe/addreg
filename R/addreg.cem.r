@@ -56,7 +56,69 @@ addreg.cem <- function(mt, mf, Y, offset, mono, family, start, control, accelera
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
                             model, accelerate, control.accelerate)
       if (!thismodel$converged) allconv <- FALSE
-      
+      totaliter <- totaliter + thismodel$iter
+      if (control$trace > 0 & control$trace <= 1)
+        if (substr(family$family, 1, 7) == "negbin1")
+          cat("Log-likelihood =", thismodel$loglik, "Iterations -", thismodel$iter, "\n")
+        else if (method != "addbin")
+          cat("Deviance =", thismodel$deviance, "Iterations -", thismodel$iter, "\n")
+      if (thismodel$loglik > best.loglik) {
+        best.model <- thismodel
+        best.loglik <- thismodel$loglik
+        best.param <- param
+        if (thismodel$converged & !thismodel$boundary) break
+      }
     }
   }
+  
+  if (length(allref$allref) == 0) {
+    nn.coefs <- coefs <- coefs.boundary <- best.model$coefficients
+    nn.design <- design <- model.matrix(allref$terms, allref$data)
+  } else {
+    nn.coefs <- best.model$coefficients
+    nn.design <- addreg.design(allref$terms, allref$data, "cem", allref$allref, allref$monotonic,
+                               design.all[best.param,])
+    reparam <- addreg.reparameterise(nn.coefs, mt, mf, "cem", allref$allref, allref$monotonic, 
+                                     design.all[best.param,])
+    coefs <- reparam$coefs
+    design <- reparam$design
+    coefs.boundary <- reparam$coefs.boundary
+  }
+  
+  boundary <- any(coefs.boundary < control$bound.tol)
+  
+  if (warn) {
+    if (!best.model$converged |  (!allconv & best.model$boundary))
+      if (identical(accelerate, "em"))
+        warning(gettextf("%s: algorithm did not converge within %d iterations -- increase 'maxit'.",
+                         method, control$maxit), call. = FALSE)
+      else
+        warning(gettextf("%s(%s): algorithm did not converge within %d iterations -- increase 'maxit' or try with 'accelerate = \"em\"'.",
+                         method, accelerate, control$maxit), call. = FALSE)
+    if (boundary) {
+      if (coefs.boundary[1] < control$bound.tol) {
+        if (family$family == "poisson" || substr(family$family, 1, 7) == "negbin1")
+          warning(gettextf("%s: fitted rates numerically 0 occurred", method), call. = FALSE)
+        else if (family$family == "binomial")
+          warning(gettextf("%s: fitted probabilities numerically 0 or 1 occurred", method), call. = FALSE)
+      } else warning(gettextf("%s: MLE on boundary of constrained parameter space", method), call. = FALSE)
+    }
+  }
+  
+  fit <- list(coefficients = coefs)
+  if (substr(family$family, 1, 7) == "negbin1") fit$scale <- best.model$scale
+  
+  fit2 <- list(residuals = best.model$residuals, fitted.values = best.model$fitted.values,
+               rank = best.model$rank, linear.predictors = best.model$linear.predictors, 
+               deviance = best.model$deviance, loglik = best.model$loglik, aic = best.model$aic, 
+               aic.c = best.model$aic.c, null.deviance = best.model$null.deviance, 
+               iter = c(totaliter, best.model$iter), prior.weights = best.model$prior.weights,
+               df.residual = best.model$df.residual, df.null = best.model$df.null,
+               y = best.model$y, x = design)
+  if (family$family == "binomial") fit2$model.addpois <- best.model$model.addpois
+  
+  fit3 <- list(converged = best.model$converged, boundary = boundary, nn.coefficients = nn.coefs,
+               nn.x = nn.design)
+  fit <- c(fit, fit2, fit3)
+  fit
 }
