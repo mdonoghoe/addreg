@@ -1,4 +1,4 @@
-addreg.reparameterise <- function(nn.coefs, terms, data, type = c("cem","em"), allref, mono, design.ref)
+addreg.reparameterise <- function(nn.coefs, terms, data, type = c("cem", "em"), allref, mono, design.ref)
 {
   type <- match.arg(type)
   termlabels <- attr(terms,"term.labels")

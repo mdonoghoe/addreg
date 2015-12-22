@@ -1,4 +1,5 @@
-addreg.allref <- function(object, data = environment(object), type = c("cem"), mono, family, start = NULL) {
+addreg.allref <- function(object, data = environment(object), type = c("cem", "em"), mono, 
+                          family, start = NULL) {
   type <- match.arg(type)
   t <- if(missing(data))
     terms(object)

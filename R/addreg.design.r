@@ -1,4 +1,4 @@
-addreg.design <- function(terms, data, type = c("cem","em"), allref, mono, design.ref) {
+addreg.design <- function(terms, data, type = c("cem", "em"), allref, mono, design.ref) {
   type <- match.arg(type)
   terms.new <- terms
   data.new <- data
