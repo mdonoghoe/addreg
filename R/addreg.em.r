@@ -77,7 +77,7 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
                rank = thismodel$rank, linear.predictors = thismodel$linear.predictors, 
                deviance = thismodel$deviance, loglik = thismodel$loglik, aic = thismodel$aic, 
                aic.c = thismodel$aic.c, null.deviance = thismodel$null.deviance, 
-               iter = c(totaliter, thismodel$iter), prior.weights = thismodel$prior.weights,
+               iter = thismodel$iter, prior.weights = thismodel$prior.weights,
                df.residual = thismodel$df.residual, df.null = thismodel$df.null,
                y = thismodel$y, x = design, standard = standard, offset = offset)
   if (model) {
