@@ -20,10 +20,6 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
   if (family$link!="identity" | !(family$family %in% c("poisson","binomial") | substr(family$family,1,7) == "negbin1"))
     stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity)")
     
-  if (family$family == "poisson") method <- "nnpois"
-  else if (substr(family$family,1,7) == "negbin1") method <- "nnnegbin"
-  else if (family$family == "binomial") method <- "addbin"
-    
   if (missing(data)) data <- environment(formula)
   control <- do.call("addreg.control", control)
   
