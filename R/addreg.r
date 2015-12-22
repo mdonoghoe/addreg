@@ -93,8 +93,6 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     fit$na.action <- attr(mf, "na.action")
     fit$terms <- mt
     fit$data <- data
-    fit$standard <- standard
-    fit$offset <- offset
     fit$xlevels <- .getXlevels(mt, mf)
     fit$xminmax <- .getXminmax(mt, mf)
   }

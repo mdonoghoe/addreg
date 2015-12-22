@@ -7,8 +7,9 @@ summary.addreg <- function(object, correlation = FALSE, ...) {
   if(!object$boundary) {
     if(object$family$family == "poisson") {
       x <- object$x
-      s <- object$standard
       y <- object$y
+      s <- if (!is.null(object$standard)) object$standard
+        else rep(1, NROW(y))
       eta <- object$linear.predictors
       info <- t(x) %*% apply(x,2,"*",s/eta)
       covmat.unscaled <- try(solve(info), silent = TRUE)
@@ -23,8 +24,9 @@ summary.addreg <- function(object, correlation = FALSE, ...) {
       covmat.unscaled <- try(solve(info), silent = TRUE)
     } else if(substr(object$family$family,1,7) == "negbin1") {
       x <- object$x
-      s <- object$standard
       y <- object$y
+      s <- if (!is.null(object$standard)) object$standard
+        else rep(1, NROW(y))
       mu <- object$fitted.values
       phi <- object$scale - 1
       r <- mu / phi
