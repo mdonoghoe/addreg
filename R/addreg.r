@@ -1,8 +1,8 @@
 addreg <- function (formula, mono = NULL, family, data, standard, subset, na.action, 
                     start = NULL, offset, control = list(...), model = TRUE, 
                     method = c("cem"),
-                    accelerate = c("em", "squarem", "pem", "qn"), 
-                    control.accelerate = list(), warn = TRUE, ...) {
+                    accelerate = c("em", "squarem", "pem", "qn"), control.method = list(), 
+                    warn = TRUE, ...) {
   call <- match.call()
   method <- match.arg(method)
   accelerate <- match.arg(accelerate)
