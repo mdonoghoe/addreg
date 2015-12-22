@@ -26,7 +26,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                              accelerate, list(control.method))
     else
       best.model <- addbin(Y, X, allref$start.new, control, allref, model,
-                           accelerate, control.accelerate)
+                           accelerate, control.method)
     best.loglik <- best.model$loglik
     best.param <- 0
     allconv <- best.model$converged
