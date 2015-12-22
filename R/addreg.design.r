@@ -24,7 +24,7 @@ addreg.design <- function(terms, data, type = c("cem","em"), allref, mono, desig
       if (type == "cem")
         contrasts(data.new[[varname]]) <- contr.treatment(levels(data.new[[varname]]), base = 1)
       else
-        contrasts(data.new[[varname]], nlevels(data.new[[varname]]) <- contr.treatment(levels(data.new[[varname]]), base = 1, contrasts = FALSE)
+        contrasts(data.new[[varname]], nlevels(data.new[[varname]])) <- contr.treatment(levels(data.new[[varname]]), base = 1, contrasts = FALSE)
     } else if (design.type[i] == 3) {
       data.new[[varname]] <- factor(data[[varname]])
       contrasts(data.new[[varname]]) <- contr.isotonic(levels(data.new[[varname]]), perm = varref)
