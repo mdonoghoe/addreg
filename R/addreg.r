@@ -89,7 +89,6 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     fit[names(res)[mres]] <- res[mres]
     fit$family <- family
     fit$weights <- rep(1, NROW(Y))
-    if (model) fit$model <- mf
     fit$na.action <- attr(mf, "na.action")
     fit$terms <- mt
     fit$data <- data
