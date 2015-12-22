@@ -45,7 +45,8 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
     
     for (param in seq_len(nparam)) {
       if (control$trace > 0) cat(method, " parameterisation ", param, "/", nparam, "\n", sep = "")
-      X <- addreg.design(allref$terms, allref$data, "cem", allref$allref, design.all[param,])
+      X <- addreg.design(allref$terms, allref$data, "cem", allref$allref,
+                         allref$monotonic, design.all[param,])
       if (family$family == "poisson")
         thismodel <- nnpois(Y, X, standard, offset, if (param == 1) allref$start.new else NULL,
                             control2, accelerate, list(control.method))
