@@ -28,7 +28,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
                 "null.deviance", "iter", "prior.weights", "weights",
                 "df.residual", "df.null", "y", "x")
   if (model) {
-    outcomes <- c(outnames, "model")
+    outnames <- c(outnames, "model")
     if (family$family == "binomial") outnames <- c(outnames, "model.addpois")
   }
   outnames <- c(outnames, "converged", "boundary", "na.action", "call", "formula",
