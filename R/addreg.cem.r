@@ -1,4 +1,4 @@
-addreg.cem <- function(mt, mf, Y, offset, mono, family, start, control, accelerate,
+addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control, accelerate,
                        control.method, warn) {
   control2 <- control
   control2$trace <- (control$trace - 1)
