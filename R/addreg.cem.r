@@ -1,5 +1,5 @@
-addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control, accelerate,
-                       control.method, warn) {
+addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control, model,
+                       accelerate, control.method, warn) {
   control2 <- control
   control2$trace <- (control$trace - 1)
   
@@ -116,7 +116,10 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                iter = c(totaliter, best.model$iter), prior.weights = best.model$prior.weights,
                df.residual = best.model$df.residual, df.null = best.model$df.null,
                y = best.model$y, x = design, standard = standard, offset = offset)
-  if (family$family == "binomial") fit2$model.addpois <- best.model$model.addpois
+  if (model) {
+    fit2$model <- mf
+    if (family$family == "binomial") fit2$model.addpois <- best.model$model.addpois
+  }
   
   fit3 <- list(converged = best.model$converged, boundary = boundary, nn.coefficients = nn.coefs,
                nn.x = nn.design)

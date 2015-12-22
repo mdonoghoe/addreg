@@ -81,7 +81,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     
     addreg.method <- paste("addreg", method, sep = ".")
     addreg.args <- list(mt = mt, mf = mf, Y = Y, standard = standard, offset = offset, mono = mono,
-                        family = family, start = start, control = control)
+                        family = family, start = start, control = control, model = model)
     if (method %in% c("cem", "em")) addreg.args$accelerate <- accelerate
     addreg.args <- c(addreg.args, list(control.method = control.method, warn = warn))
     res <- do.call(addreg.method, addreg.args)
