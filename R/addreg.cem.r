@@ -115,7 +115,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                aic.c = best.model$aic.c, null.deviance = best.model$null.deviance, 
                iter = c(totaliter, best.model$iter), prior.weights = best.model$prior.weights,
                df.residual = best.model$df.residual, df.null = best.model$df.null,
-               y = best.model$y, x = design)
+               y = best.model$y, x = design, standard = standard, offset = offset)
   if (family$family == "binomial") fit2$model.addpois <- best.model$model.addpois
   
   fit3 <- list(converged = best.model$converged, boundary = boundary, nn.coefficients = nn.coefs,
