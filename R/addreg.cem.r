@@ -16,7 +16,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
   totaliter <- 0
   
   if (length(allref$allref) == 0) {
-    if (control$trace > 0) cat(method, " parameterisation 1/1\n")
+    if (control$trace > 0) cat(method, "parameterisation 1/1\n")
     X <- model.matrix(allref$terms, allref$data)
     if (family$family == "poisson")
       best.model <- nnpois(Y, X, standard, offset, allref$start.new, control2,
