@@ -23,7 +23,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
   if (missing(data)) data <- environment(formula)
   control <- do.call("addreg.control", control)
   
-  outnames <- c("coefficients", "residuals", "fitted.values", "rank", "family",
+  outnames <- c("coefficients", "scale", "residuals", "fitted.values", "rank", "family",
                 "linear.predictors", "deviance", "loglik", "aic", "aic.c",
                 "null.deviance", "iter", "prior.weights", "weights",
                 "df.residual", "df.null", "y", "x")
@@ -87,7 +87,6 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     res <- do.call(addreg.method, addreg.args)
     mres <- match(outnames, names(res), 0L)
     fit[names(res)[mres]] <- res[mres]
-    fit$family <- family
     fit$weights <- rep(1, NROW(Y))
     fit$na.action <- attr(mf, "na.action")
     fit$terms <- mt

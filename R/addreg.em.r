@@ -74,7 +74,8 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
   if (substr(family$family, 1, 7) == "negbin1") fit$scale <- thismodel$scale
   
   fit2 <- list(residuals = thismodel$residuals, fitted.values = thismodel$fitted.values,
-               rank = thismodel$rank, linear.predictors = thismodel$linear.predictors, 
+               rank = thismodel$rank, family = thismodel$family,
+               linear.predictors = thismodel$linear.predictors, 
                deviance = thismodel$deviance, loglik = thismodel$loglik, aic = thismodel$aic, 
                aic.c = thismodel$aic.c, null.deviance = thismodel$null.deviance, 
                iter = thismodel$iter, prior.weights = thismodel$prior.weights,

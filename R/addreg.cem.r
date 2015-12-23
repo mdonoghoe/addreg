@@ -110,7 +110,8 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
   if (substr(family$family, 1, 7) == "negbin1") fit$scale <- best.model$scale
   
   fit2 <- list(residuals = best.model$residuals, fitted.values = best.model$fitted.values,
-               rank = best.model$rank, linear.predictors = best.model$linear.predictors, 
+               rank = best.model$rank, family = best.model$family,
+               linear.predictors = best.model$linear.predictors, 
                deviance = best.model$deviance, loglik = best.model$loglik, aic = best.model$aic, 
                aic.c = best.model$aic.c, null.deviance = best.model$null.deviance, 
                iter = c(totaliter, best.model$iter), prior.weights = best.model$prior.weights,
