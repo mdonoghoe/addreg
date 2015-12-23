@@ -1,7 +1,7 @@
 addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control, model,
                       accelerate, control.method, warn) {
   control2 <- control
-  control2$trace <- (control$trace - 1)
+  control2$trace <- (control$trace > 1)
   
   if (family$family == "poisson") method <- "nnpois"
   else if (substr(family$family,1,7) == "negbin1") method <- "nnnegbin"
