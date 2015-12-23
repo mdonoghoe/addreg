@@ -44,8 +44,8 @@ addreg.reparameterise <- function(nn.coefs, terms, data, type = c("cem", "em"), 
         }
       } else {
         thiscoef.rev <- coefs.model[(npar.o + coef.cont.count)]
-        coefs.int.reparam <- coefs.int.reparam + thiscoef * cont.max - thiscoef.rev * cont.min
-        coefs.model.reparam[(coef.count.n + 1L)] <- thiscoef.rev - thiscoef
+        coefs.int.reparam <- coefs.int.reparam - thiscoef * cont.min + thiscoef.rev * cont.max
+        coefs.model.reparam[(coef.count.n + 1L)] <- thiscoef - thiscoef.rev
       }
       coef.names <- append(coef.names, varname)
       coef.count.o <- coef.count.o + 1L
