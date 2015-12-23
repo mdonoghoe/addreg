@@ -45,8 +45,8 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
     coefs.boundary <- reparam$coefs.boundary
   }
   
-  nvars <- length(coefs)
-  vardiff <- length(nn.coefs) - nvars
+  nvars <- length(coefs) + as.numeric(substr(family$family, 1, 7) == "negbin1")
+  vardiff <- length(nn.coefs) + as.numeric(substr(family$family, 1, 7) == "negbin1") - nvars
   aic.c <- thismodel$aic - 2 * vardiff + 2 * nvars * (nvars + 1) / (NROW(Y) - nvars - 1)
   
   boundary <- any(coefs.boundary < control$bound.tol)
@@ -74,13 +74,13 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
   if (substr(family$family, 1, 7) == "negbin1") fit$scale <- thismodel$scale
   
   fit2 <- list(residuals = thismodel$residuals, fitted.values = thismodel$fitted.values,
-               rank = nvars + as.numeric(substr(family$family, 1, 7) == "negbin1"),
-               family = thismodel$family, linear.predictors = thismodel$linear.predictors, 
-               deviance = thismodel$deviance, loglik = thismodel$loglik, aic = thismodel$aic, 
-               aic.c = thismodel$aic.c, null.deviance = thismodel$null.deviance, 
-               iter = thismodel$iter, prior.weights = thismodel$prior.weights,
-               df.residual = thismodel$df.residual, df.null = thismodel$df.null,
-               y = thismodel$y, x = design, standard = standard, offset = offset)
+               rank = nvars, family = thismodel$family, linear.predictors = thismodel$linear.predictors, 
+               deviance = thismodel$deviance, loglik = thismodel$loglik, 
+               aic = thismodel$aic - 2*vardiff,  aic.c = aic.c, 
+               null.deviance = thismodel$null.deviance,  iter = thismodel$iter, 
+               prior.weights = thismodel$prior.weights, df.residual = thismodel$df.residual,
+               df.null = thismodel$df.null, y = thismodel$y, x = design, 
+               standard = standard, offset = offset)
   if (model) {
     fit2$model <- mf
     if (family$family == "binomial") fit2$model.addpois <- thismodel$model.addpois
