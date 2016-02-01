@@ -68,33 +68,25 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
     if (!isF[term2]) {
 			cont.min <- min(data[[term2]])
 			cont.max <- max(data[[term2]])
+      if (type == "em" || family$family == "binomial" || monotonic[term]) allref[[term]][[1]] <- 1
+      else if (is.null(start)) allref[[term]] <- as.list(1:2)
+      else allref[[term]] <- as.list(abs(3 * as.numeric(start.orig[this.start.o] <= 0) - 1:2))
 			if (!is.null(start)) {
-				if (family$family != "binomial") {
-					if (!monotonic[term]) {
-						if (start.orig[this.start.o] < 0) {
-							allref[[term]] <- as.list(2:1)
-							start.new.int <- start.new.int + start.orig[this.start.o] * cont.max
-							start.new.other[this.start.n-1] <- -start.orig[this.start.o]
-						} else {
-							allref[[term]] <- as.list(1:2)
-							start.new.int <- start.new.int + start.orig[this.start.o] * cont.min
-							start.new.other[this.start.n-1] <- start.orig[this.start.o]
-						}
-					} else {
-						allref[[term]][[1]] <- 1
-						start.new.int <- start.new.int + start.orig[this.start.o] * cont.min
-						start.new.other[this.start.n-1] <- start.orig[this.start.o]
-					}
-				} else {
-          allref[[term]][[1]] <- 1
+        if (family$family == "binomial" || monotonic[term]) {
           start.new.int <- start.new.int + start.orig[this.start.o] * cont.min
           start.new.other[this.start.n-1] <- start.orig[this.start.o]
+        } else {
+          cont.delta <- as.numeric(start.orig[this.start.o] > 0)
+          start.new.int <- start.new.int + start.orig[this.start.o] * (cont.delta * cont.min + (1 - cont.delta) * cont.max)
+          if (type == "cem") start.new.other[this.start.n - 1] <- cont.delta * start.orig[this.start.o] - (1 - cont.delta) * start.orig[this.start.o]
+          else {
+            start.new.other[this.start.n - 1] <- cont.delta * start.orig[this.start.o]
+            start.new.other <- c(start.new.other, -(1 - cont.delta) * start.orig[this.start.o])
+          }
         }
-			this.start.o <- this.start.o + 1
-      this.start.n <- this.start.n + 1
-			} else {
-				allref[[term]][[1]] <- 1
-				if(family$family != "binomial" & !monotonic[term]) allref[[term]][[2]] <- 2
+        delta.denom <- delta.denom + cont.max - cont.min
+        this.start.o <- this.start.o + 1
+        this.start.n <- this.start.n + 1
 			}
 			attr(allref[[term]],"type") <- 1
 		} else {
