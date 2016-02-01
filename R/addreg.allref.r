@@ -8,7 +8,7 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
     data <- model.frame(object, data)
   else {
     reorder = match(sapply(attr(t, "variables"), deparse,
-                    width.cutoff = 500)[-1L], names(data))
+                           width.cutoff = 500)[-1L], names(data))
     if (any(is.na(reorder)))
       stop("model frame and formula mismatch in addreg.allref()")
     if(!identical(reorder, seq_len(ncol(data))))
@@ -53,7 +53,8 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
 			start.new.scale <- start.new.other[length(start.new.other)]
 			start.new.other <- start.new.other[-length(start.new.other)]
 		}
-		this.start <- 2
+		this.start.o <- this.start.n <- 2
+    delta.denom <- 1
 	} else {
 		start.new.int <- NULL
 		start.new.other <- NULL
@@ -63,33 +64,34 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
                              start.new = start))
   for (term in termlist) {
 		allref[[term]] <- list()
-		term2 <- gsub("`","",term)
+		term2 <- gsub("`", "", term)
     if (!isF[term2]) {
 			cont.min <- min(data[[term2]])
 			cont.max <- max(data[[term2]])
 			if (!is.null(start)) {
 				if (family$family != "binomial") {
 					if (!monotonic[term]) {
-						if (start.orig[this.start] < 0) {
+						if (start.orig[this.start.o] < 0) {
 							allref[[term]] <- as.list(2:1)
-							start.new.int <- start.new.int + start.orig[this.start] * cont.max
-							start.new.other[this.start-1] <- -start.orig[this.start]
+							start.new.int <- start.new.int + start.orig[this.start.o] * cont.max
+							start.new.other[this.start.n-1] <- -start.orig[this.start.o]
 						} else {
 							allref[[term]] <- as.list(1:2)
-							start.new.int <- start.new.int + start.orig[this.start] * cont.min
-							start.new.other[this.start-1] <- start.orig[this.start]
+							start.new.int <- start.new.int + start.orig[this.start.o] * cont.min
+							start.new.other[this.start.n-1] <- start.orig[this.start.o]
 						}
 					} else {
 						allref[[term]][[1]] <- 1
-						start.new.int <- start.new.int + start.orig[this.start] * cont.min
-						start.new.other[this.start-1] <- start.orig[this.start]
+						start.new.int <- start.new.int + start.orig[this.start.o] * cont.min
+						start.new.other[this.start.n-1] <- start.orig[this.start.o]
 					}
 				} else {
           allref[[term]][[1]] <- 1
-          start.new.int <- start.new.int + start.orig[this.start] * cont.min
-          start.new.other[this.start-1] <- start.orig[this.start]
+          start.new.int <- start.new.int + start.orig[this.start.o] * cont.min
+          start.new.other[this.start.n-1] <- start.orig[this.start.o]
         }
-			this.start <- this.start + 1
+			this.start.o <- this.start.o + 1
+      this.start.n <- this.start.n + 1
 			} else {
 				allref[[term]][[1]] <- 1
 				if(family$family != "binomial" & !monotonic[term]) allref[[term]][[2]] <- 2
@@ -99,27 +101,28 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
 			lvls <- levels(factor(data[[term]]))
 			nlvls <- nlevels(factor(data[[term]]))
 			if (!is.null(start)) {
-				start.this <- start.orig[this.start:(this.start + nlvls - 2)]
+				start.this <- start.orig[this.start.o:(this.start.o + nlvls - 2)]
 				if (!monotonic[term]) {
 					if (family$family != "binomial") {
 						allref[[term]] <- as.list(lvls[order(c(0, start.this))])
 						start.new.int <- start.new.int + min(c(0, start.this))
-						start.new.other[(this.start - 1):(this.start + nlvls - 3)] <- (c(0, start.this) - min(c(0, start.this)))[-which.min(c(0, start.this))]
+						start.new.other[(this.start.n - 1):(this.start.n + nlvls - 3)] <- (c(0, start.this) - min(c(0, start.this)))[-which.min(c(0, start.this))]
 						attr(allref[[term]], "type") <- 2
 					} else {
 						allcombins <- combinat::permn(lvls)
 						find.order <- which(sapply(allcombins, function(x) all(x == lvls[order(c(0, start.this))])))
 						allref[[term]] <- append(allcombins[find.order], allcombins[-find.order])
 						start.new.int <- start.new.int + min(c(0, start.this))
-						start.new.other[(this.start - 1):(this.start + nlvls - 3)] <- diff(c(0, start.this)[order(c(0, start.this))])
+						start.new.other[(this.start.n - 1):(this.start.n + nlvls - 3)] <- diff(c(0, start.this)[order(c(0, start.this))])
 						attr(allref[[term]], "type") <- 3
 					}					
 				} else {
 					allref[[term]][[1]] <- lvls
-					start.new.other[(this.start - 1):(this.start + nlvls - 3)] <- diff(c(0, start.this))
+					start.new.other[(this.start.n - 1):(this.start.n + nlvls - 3)] <- diff(c(0, start.this))
 					attr(allref[[term]], "type") <- 3
 				}
-				this.start <- this.start + nlvls - 1
+				this.start.o <- this.start.o + nlvls - 1
+        this.start.n <- this.start.n + nlvls - 1
 			} else if (family$family != "binomial" & !monotonic[term]) {
 				allref[[term]] <- as.list(lvls)
 				attr(allref[[term]], "type") <- 2
