@@ -86,6 +86,27 @@ addreg.reparameterise <- function(nn.coefs, terms, data, type = c("cem", "em"), 
       coef.names <- append(coef.names, paste0(varname, lev[-1L]))
       coef.count.o <- coef.count.o + nlev - 1L
       coef.count.n <- coef.count.n + nlev - 1L
+    } else if (design.type[i] == 4) {
+      lev <- levels(factor(data[[varname]]))
+      nlev <- nlevels(factor(data[[varname]]))
+      ref.orig <- varref
+      allcombin <- lapply(seq_len(nlev - 1), function(x) combinat::combn(ref.orig, x, simplify = FALSE))
+      allcombin2 <- unlist(allcombin, recursive = FALSE)
+      thiscoef <- coefs.model[(coef.count.o + 1L):(coef.count.o + length(allcombin2))]
+      reord <- rev(cumsum(sapply(allcombin, length))) - 1
+      thiscoef.reord <- thiscoef
+      for (j in seq_along(reord)) 
+        thiscoef.reord <- append(thiscoef.reord[-1L], thiscoef.reord[1L], after = reord[j])
+      thiscoef.all <- rep(0, nlev)
+      for (k in seq_along(lev)) 
+        thiscoef.all[k] <- sum(thiscoef.reord[sapply(allcombin2, function(x) k %in% x)])
+      thiscoef.new <- thiscoef.all[-1L] - thiscoef.all[1L]
+      coefs.int.reparam <- coefs.int.reparam + thiscoef[1L]
+      coefs.boundary <- coefs.boundary + min(thiscoef.all)
+      coefs.model.reparam[(coef.count.n + 1L):(coef.count.n + nlev - 1L)] <- thiscoef.new
+      coef.names <- append(coef.names, paste0(varname, lev[-1L]))
+      coef.count.o <- coef.count.o + length(allcombin2)
+      coef.count.n <- coef.count.n + nlev - 1L
     }
   }
   coefs <- c(coefs.int.reparam, coefs.model.reparam)
