@@ -52,6 +52,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     if (any(attr(mt,"order") > 1)) stop("models with interactions are not supported by addreg")
     if (attr(mt,"response") == 0) stop("missing response")
     
+    Y <- model.response(mf, "numeric")
     standard <- as.vector(model.extract(mf,"standard"))
     if(!is.null(standard)) {
       if (length(standard) != NROW(Y))
@@ -72,7 +73,6 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
         warning("'offset' is not supported for binomial family", call. = FALSE)
     }
     
-    Y <- model.response(mf, "numeric")
     if (length(dim(Y)) == 1L) {
       nm <- rownames(Y)
       dim(Y) <- NULL
