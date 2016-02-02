@@ -99,14 +99,21 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
 						allref[[term]] <- as.list(lvls[order(c(0, start.this))])
 						start.new.int <- start.new.int + min(c(0, start.this))
 						start.new.other[(this.start.n - 1):(this.start.n + nlvls - 3)] <- (c(0, start.this) - min(c(0, start.this)))[-which.min(c(0, start.this))]
+            if (type == "em") start.new.other <- append(start.new.other, 0, after = this.start.n - 3 + which.min(c(0, start.this)))
 						attr(allref[[term]], "type") <- 2
 					} else {
 						allcombins <- combinat::permn(lvls)
 						find.order <- which(sapply(allcombins, function(x) all(x == lvls[order(c(0, start.this))])))
-						allref[[term]] <- append(allcombins[find.order], allcombins[-find.order])
-						start.new.int <- start.new.int + min(c(0, start.this))
-						start.new.other[(this.start.n - 1):(this.start.n + nlvls - 3)] <- diff(c(0, start.this)[order(c(0, start.this))])
-						attr(allref[[term]], "type") <- 3
+            start.new.int <- start.new.int + min(c(0, start.this))
+            start.new.other[(this.start.n - 1):(this.start.n + nlvls - 3)] <- diff(c(0, start.this)[order(c(0, start.this))])
+            if (type == "cem") {
+              allref[[term]] <- append(allcombins[find.order], allcombins[-find.order])
+              attr(allref[[term]], "type") <- 3
+            } else {
+              allref[[term]] <- allcombins[find.order]
+              start.new.other <- append(start.new.other, rep(0, 2^nlvls - nlvls - 1), after = this.start.n + nlvls - 1)
+              attr(allref[[term]], "type") <- 4
+            }
 					}					
 				} else {
 					allref[[term]][[1]] <- lvls
@@ -115,15 +122,30 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
 				}
 				this.start.o <- this.start.o + nlvls - 1
         this.start.n <- this.start.n + nlvls - 1
+        if (type == "em") {
+          if (family$family != "binomial" & !monotonic[term]) {
+            this.start.n <- this.start.n + 1
+            delta.denom <- delta.denom + 1
+          } else if (family$family == "binomial") {
+            this.start.n <- this.start.n + 2^nlvls - nlvls - 1
+            delta.denom <- delta.denom + 2^nlvls - nlvls - 1
+          }
+        }
 			} else if (family$family != "binomial" & !monotonic[term]) {
-				allref[[term]] <- as.list(lvls)
+				if (type == "cem") allref[[term]] <- as.list(lvls)
+        else allref[[term]][[1]] <- lvls[1]
 				attr(allref[[term]], "type") <- 2
 			} else {
 				if (monotonic[term]) allref[[term]][[1]] <- lvls
 				else allref[[term]] <- combinat::permn(lvls)
-				attr(allref[[term]], "type") <- 3
+				if (family$family == "binomial" && !monotonic[term]) attr(allref[[term]], "type") <- 4
+        else attr(allref[[term]], "type") <- 3
 			}
 		}
+  }
+  if (type == "em" && !is.null(start)) {
+    start.new.int <- start.new.int / delta.denom
+    start.new.other <- start.new.other + start.new.int
   }
   list(allref = allref, terms = t, data = data, monotonic = monotonic, 
        start.new = c(start.new.int, start.new.other, start.new.scale))

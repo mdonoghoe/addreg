@@ -28,6 +28,9 @@ addreg.design <- function(terms, data, type = c("cem", "em"), allref, mono, desi
     } else if (design.type[i] == 3) {
       data.new[[varname]] <- factor(data[[varname]])
       contrasts(data.new[[varname]]) <- contr.isotonic(levels(data.new[[varname]]), perm = varref)
+    } else if (design.type[i] == 4) {
+      data.new[[varname]] <- factor(data[[varname]])
+      contrasts(data.new[[varname]]) <- contr.opisotonic(levels(data.new[[varname]]), perm = varref)
     }
   }
   attr(data.new, "terms") <- terms.new
