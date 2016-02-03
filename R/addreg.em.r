@@ -15,7 +15,8 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
     X <- model.matrix(allref$terms, allref$data)
   else {
     design.all <- expand.grid(lapply(design.numref, seq_len))
-    X <- addreg.design(allref$terms, allref$data, "em", allref$allref, allref$monotonic, design.all[1,])
+    X <- addreg.design(allref$terms, allref$data, if (family$family == "binomial") "cem" else "em", 
+                       allref$allref, allref$monotonic, design.all[1,])
   }
   
   if (family$family == "poisson")
@@ -25,7 +26,7 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
     thismodel <- nnnegbin(Y, X, standard, offset, allref$start.new, control2, accelerate,
                           list(control.method))
   else if (family$family == "binomial")
-    thismodel <- addbin(Y, X, allref$start.new, control, allref, model, accelerate, control.method)
+    thismodel <- addbin(Y, X, allref$start.new, control, allref, model, "em", accelerate, control.method)
     
   if (control$trace > 0 & control$trace <= 1)
     if (substr(family$family, 1, 7) == "negbin1")
@@ -39,7 +40,8 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
   } else {
     nn.coefs <- thismodel$coefficients
     nn.design <- X
-    reparam <- addreg.reparameterise(nn.coefs, mt, mf, "em", allref$allref, allref$monotonic, design.all[1,])
+    reparam <- addreg.reparameterise(nn.coefs, mt, mf, if (family$family == "binomial") "cem" else "em",
+                                     allref$allref, allref$monotonic, design.all[1,])
     coefs <- reparam$coefs
     design <- reparam$design
     coefs.boundary <- reparam$coefs.boundary
@@ -78,7 +80,7 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
                deviance = thismodel$deviance, loglik = thismodel$loglik, 
                aic = thismodel$aic - 2*vardiff,  aic.c = aic.c, 
                null.deviance = thismodel$null.deviance,  iter = thismodel$iter, 
-               prior.weights = thismodel$prior.weights, df.residual = thismodel$df.residual,
+               prior.weights = thismodel$prior.weights, df.residual = thismodel$df.residual + vardiff,
                df.null = thismodel$df.null, y = thismodel$y, x = design, 
                standard = standard, offset = offset)
   if (model) {

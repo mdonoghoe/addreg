@@ -62,7 +62,7 @@ contr.opisotonic <- function (n, perm, contrasts = TRUE, sparse = FALSE) {
   for(i in seq_len(ncol(z))) z[,i] <- as.numeric(perm %in% allcombin2[[i]])
   movecols <- rev(cumsum(sapply(allcombin, length)))
   z2 <- cbind(z[,movecols], z[,-movecols])
-  z2
+  z2[permn,]
 }
 
 .Triang <- function(nms) {

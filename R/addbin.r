@@ -1,5 +1,5 @@
 addbin <- function(y, x, start = NULL, control = list(), allref,
-                   model = TRUE, accelerate, control.accelerate)
+                   model = TRUE, method, accelerate, control.accelerate)
 {
   control <- do.call("addreg.control", control)
   x <- as.matrix(x)
@@ -46,9 +46,12 @@ addbin <- function(y, x, start = NULL, control = list(), allref,
     mono <- FALSE
     termlist <- attr(allref$terms, "term.labels")
     for(term in termlist) {
-      if(attr(allref$allref[[term]],"type") == 1) mono <- c(mono, allref$monotonic[term])
-      else {
+      if (attr(allref$allref[[term]],"type") == 1) mono <- c(mono, allref$monotonic[term])
+      else if (attr(allref$allref[[term]], "type") %in% 2:3) {
         nlev <- nlevels(factor(allref$data[[term]])) - 1
+        mono <- c(mono, rep(TRUE, nlev))
+      } else {
+        nlev <- 2^nlevels(factor(allref$data[[term]])) - 2
         mono <- c(mono, rep(TRUE, nlev))
       }
     }
@@ -62,7 +65,7 @@ addbin <- function(y, x, start = NULL, control = list(), allref,
   formula.addpois <- as.formula(paste("Y ~",paste(names(X),collapse=" + ")))
   model.addpois <- addreg(formula.addpois, mono = unname(mono), family = poisson, 
                           data = data.new, standard = N, start = start.new, 
-                          control = control, accelerate = accelerate,
+                          control = control, method = method, accelerate = accelerate,
                           control.accelerate = control.accelerate, warn = FALSE, model = model)
     
   if(nvars == 1) {

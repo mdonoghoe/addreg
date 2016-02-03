@@ -26,7 +26,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                              accelerate, list(control.method))
     else
       best.model <- addbin(Y, X, allref$start.new, control, allref, model,
-                           accelerate, control.method)
+                           "cem", accelerate, control.method)
     best.loglik <- best.model$loglik
     best.param <- 0
     allconv <- best.model$converged
@@ -55,7 +55,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                               control2, accelerate, list(control.method))
       else if (family$family == "binomial")
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
-                            model, accelerate, control.accelerate)
+                            model, "cem", accelerate, control.accelerate)
       if (!thismodel$converged) allconv <- FALSE
       totaliter <- totaliter + thismodel$iter
       if (control$trace > 0 & control$trace <= 1)
