@@ -1,0 +1,84 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+# addreg
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/addreg)](https://cran.r-project.org/package=addreg)
+
+`logbin` provides methods for fitting identity-link GLMs and GAMs to discrete data, using EM-type algorithms with more stable convergence properties than standard methods.
+
+An example of periodic non-convergence using `glm` (run with `trace = TRUE` to see deviance at each iteration):
+
+```{r, echo = TRUE, warning = FALSE}
+require(glm2, quietly = TRUE)
+data(crabs)
+
+crabs.boot <- crabs[crabs$Rep1, -c(5:6)]
+
+t.glm <- system.time(
+  fit.glm <- glm(Satellites ~ Width + Dark + GoodSpine, data = crabs.boot, family = poisson(identity),
+                    start = rep(1, 4), maxit = 500)
+)
+```
+
+The combinatorial EM method (Marschner, 2010) provides stable convergence:
+```{r, echo = TRUE, message = FALSE}
+require(addreg, quietly = TRUE)
+t.cem <- system.time(
+  fit.cem <- addreg(Satellites ~ Width + Dark + GoodSpine, data = crabs.boot, family = poisson,
+                    start = rep(1, 4))
+)
+```
+
+Generic EM acceleration algorithms from the `turboEM` package --- implemented in version $\geq$ 3.0 --- can speed this up:
+```{r, echo = TRUE, message = FALSE}
+t.cem.acc <- system.time(fit.cem.acc <- update(fit.cem, accelerate = "squarem"))
+```
+
+Comparison of results:
+```{r, echo = FALSE}
+fit.list <- list(fit.glm, fit.cem, fit.cem.acc)
+time.list <- list(t.glm, t.cem, t.cem.acc)
+res <- data.frame(converged = sapply(fit.list, function(x) x$converged),
+                  logLik = sapply(fit.list, logLik),
+                  iterations = sapply(fit.list, function(x) x$iter[1]),
+                  time = sapply(time.list, function(x) x[3]))
+rownames(res) <- c("glm", "cem", "cem.acc")
+res
+```
+
+The combinatorial EM algorithms for identity-link binomial (Donoghoe and Marschner, 2014) and negative binomial (Donoghoe and Marschner, 2016) models are also available, using `family = binomial` and `family = negbin1`, respectively.
+
+Semi-parametric regression using B-splines (Donoghoe and Marschner, 2015) can be incorporated by using the `addreg.smooth` function. See `example(addreg.smooth)` for a simple example.
+
+## Installation
+
+Get the released version from CRAN:
+
+```{r, echo = TRUE, eval = FALSE}
+install.packages("addreg")
+```
+
+Or the development version from github:
+
+```{r, echo = TRUE, eval = FALSE}
+# install.packages("devtools")
+devtools::install_github("mdonoghoe/addreg")
+```
+
+## References
+* Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods for additive binomial models with application to adjusted risk differences. _Computational Statistics and Data Analysis_ __80__: 184-196.
+* Donoghoe, M. W. and I. C. Marschner (2015). Flexible regression models for rate differences, risk differences and relative risks. _International Journal of Biostatistics_ __11__(1): 91-108.
+* Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate differences using additive negative binomial regression. _Statistics in Medicine_ __35__(18): 3166-3178.
+* Marschner, I. C. (2010). Stable computation of maximum likelihood estimates in identity link Poisson regression. _Journal of Computational and Graphical Statistics_ __19__(3): 666-683.
