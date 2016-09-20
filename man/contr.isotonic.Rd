@@ -1,5 +1,6 @@
 \name{contr.isotonic}
 \alias{contr.isotonic}
+\alias{contr.opisotonic}
 \title{
 Contrast Matrix for Isotonic Covariate
 }
@@ -10,6 +11,8 @@ in a specified order.
 }
 \usage{
 contr.isotonic(n, perm, contrasts = TRUE, sparse = FALSE)
+
+contr.opisotonic(n, perm, constrasts = TRUE, sparse = FALSE)
 }
 \arguments{
   \item{n}{
@@ -32,13 +35,18 @@ contr.isotonic(n, perm, contrasts = TRUE, sparse = FALSE)
 }
 }
 \details{
-This function is used in creating the design matrix
+\code{contr.isotonic} is used in creating the design matrix
 for categorical covariates with a specified order under a
 particular parameterisation. For Poisson and negative binomial models, this
 occurs if a categorical covariate is defined as monotonic;
 for binomial models, each parameterisation defines a
 permutation of the levels that must be monotonically
 increasing.
+
+For overparameterised binomial models, the design matrix for
+categorical covariates must include isotonic-style dummy 
+covariates for every possible permutation of the levels. This
+is the function of \code{contr.opisotonic}.
 
 In the order specified by \code{perm}, the coefficient
 associated with each level is the sum of increments between
