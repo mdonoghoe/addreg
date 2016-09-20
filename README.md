@@ -31,18 +31,27 @@ t.cem <- system.time(
 )
 ```
 
-Generic EM acceleration algorithms from the `turboEM` package --- implemented in version ≥ 3.0 --- can speed this up:
+...but it can take a while. Using an overparameterised EM approach removes the need to run 2<sup>3</sup> = 8 separate EM algorithms:
+
+``` r
+t.em <- system.time(fit.em <- update(fit.cem, method = "em"))
+```
+
+while generic EM acceleration algorithms from the `turboEM` package --- implemented in version ≥ 3.0 --- can speed this up further still:
 
 ``` r
 t.cem.acc <- system.time(fit.cem.acc <- update(fit.cem, accelerate = "squarem"))
+t.em.acc <- system.time(fit.em.acc <- update(fit.em, accelerate = "squarem"))
 ```
 
 Comparison of results:
 
     #>         converged    logLik iterations time
-    #> glm         FALSE -518.2579        500 0.07
-    #> cem          TRUE -500.8886       6101 0.56
-    #> cem.acc      TRUE -500.8886        128 0.12
+    #> glm         FALSE -518.2579        500 0.04
+    #> cem          TRUE -500.8886       6101 0.55
+    #> em           TRUE -500.8886       1680 0.14
+    #> cem.acc      TRUE -500.8886        128 0.13
+    #> em.acc       TRUE -500.8886         38 0.03
 
 The combinatorial EM algorithms for identity-link binomial (Donoghoe and Marschner, 2014) and negative binomial (Donoghoe and Marschner, 2016) models are also available, using `family = binomial` and `family = negbin1`, respectively.
 
