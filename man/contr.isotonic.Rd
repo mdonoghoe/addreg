@@ -12,7 +12,7 @@ in a specified order.
 \usage{
 contr.isotonic(n, perm, contrasts = TRUE, sparse = FALSE)
 
-contr.opisotonic(n, perm, constrasts = TRUE, sparse = FALSE)
+contr.opisotonic(n, perm, contrasts = TRUE, sparse = FALSE)
 }
 \arguments{
   \item{n}{
