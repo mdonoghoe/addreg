@@ -14,6 +14,7 @@ Additive Regression for Discrete Data
 \usage{
 addreg(formula, mono = NULL, family, data, standard, subset, na.action,
        start = NULL, offset, control = list(...), model = TRUE, 
+       method = c("cem", "em"),
        accelerate = c("em", "squarem", "pem", "qn"), 
        control.accelerate = list(), warn = TRUE, ...)
 }
@@ -98,6 +99,13 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
 	a logical value indicating whether the \emph{model frame} 
 	(and, for binomial models, the equivalent Poisson model)
 	should be included as a component of the returned value.
+}
+  \item{method}{
+  a character string that determines which algorithm to use to
+  find the MLE: \code{"cem"} for the combinatorial EM algorithm,
+  which cycles through a sequence of constrained parameter spaces,
+  or \code{"em"} for a single EM algorithm based on an
+  overparameterised model.
 }
   \item{accelerate}{
     a character string that determines the acceleration
@@ -260,6 +268,15 @@ fit.glm <- glm(Satellites ~ width.shifted + factor(Dark) + factor(GoodSpine),
   
 fit.addreg <- addreg(formula(fit.glm), family = poisson, data = crabs.boot,
   trace = 1)
+
+# Speed up convergence by using single EM algorithm
+fit.addreg.em <- update(fit.addreg, method = "em")
+
+# Speed up convergence by using acceleration methods
+fit.addreg.acc <- update(fit.addreg, accelerate = "squarem")
+fit.addreg.em.acc <- update(fit.addreg.em, accelerate = "squarem")
+  
+# Usual S3 methods work on addreg objects
 summary(fit.addreg)
 vcov(fit.addreg)
 confint(fit.addreg)
