@@ -1,7 +1,7 @@
 addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset, na.action,
                            offset, control = list(...), model = TRUE, 
                            accelerate = c("em", "squarem", "pem", "qn"),
-                           control.accelerate = list(), model.addreg = FALSE, ...) {
+                           control.method = list(), model.addreg = FALSE, ...) {
   call <- match.call()
   accelerate <- match.arg(accelerate)
   
@@ -83,7 +83,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
                      mono = eval(modelspec$monotonic), family = famname, 
                      data = as.name("data.new"), control = control2, 
                      warn = FALSE, fit = TRUE, accelerate = accelerate,
-                     control.accelerate = control.accelerate)
+                     control.method = control.method)
       if (!is.null(os)) modelf$offset <- as.name("(offset)")
       if (!is.null(std)) modelf$standard <- as.name("(standard)")
       if (!missing(subset)) modelf$subset <- subset

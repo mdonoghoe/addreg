@@ -13,7 +13,7 @@ terms.
 addreg.smooth(formula, mono = NULL, family, data, standard, subset, 
               na.action, offset, control = list(...), model = TRUE, 
               accelerate = c("em", "squarem", "pem", "qn"),
-              control.accelerate = list(), model.addreg = FALSE, ...)
+              control.method = list(), model.addreg = FALSE, ...)
 }
 \arguments{
   \item{formula}{
@@ -100,7 +100,7 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
   \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
   for further details. Note that \code{"decme"} is not permitted.
 }
-  \item{control.accelerate}{
+  \item{control.method}{
     a list of control parameters for the acceleration algorithm, which are passed to 
     the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
   

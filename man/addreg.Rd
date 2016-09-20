@@ -16,7 +16,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
        start = NULL, offset, control = list(...), model = TRUE, 
        method = c("cem", "em"),
        accelerate = c("em", "squarem", "pem", "qn"), 
-       control.accelerate = list(), warn = TRUE, ...)
+       control.method = list(), warn = TRUE, ...)
 }
 \arguments{
   \item{formula}{
@@ -113,7 +113,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
   for further details. Note that \code{"decme"} is not permitted.
 }
-  \item{control.accelerate}{
+  \item{control.method}{
     a list of control parameters for the acceleration algorithm, which are passed to 
     the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
   
