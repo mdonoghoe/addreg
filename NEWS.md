@@ -1,5 +1,6 @@
 # addreg 3.0 _(in progress)_
-* Use `turboEM` to allow acceleration of EM algorithm
+* `method` option added: fit using combinatorial EM or single parameter expanded EM algorithm (not available for `addreg.smooth` yet)
+* `accelerate` option added: use `turboEM` to allow acceleration of EM algorithm
 * (Minor change) Change `iter` to return a vector of two values
 
 # addreg 2.0
