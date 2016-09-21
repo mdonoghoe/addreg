@@ -2,10 +2,12 @@ utils::globalVariables("tol")
 
 nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
                      accelerate = c("em", "squarem", "pem", "qn"),
-                     control.accelerate = list(list()))
+                     control.accelerate = list())
 {
   control <- do.call("addreg.control", control)
   accelerate <- match.arg(accelerate)
+  control.accelerate2 <- list()
+  control.accelerate2[[1]] <- control.accelerate
   
   x <- as.matrix(x)
   xnames <- dimnames(x)[[2L]]
@@ -144,7 +146,7 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
                           control.run = list(convtype = "parameter", tol = control$epsilon,
                                              stoptype = "maxiter", maxiter = control$maxit,
                                              convfn.user = conv.user, trace = control$trace),
-                          control.method = control.accelerate)
+                          control.method = control.accelerate2)
   if (res$fail[1]) stop(res$errors[1])
   coefnew.phi <- res$pars[1,1]
   coefnew.mu <- res$pars[1,-1]
