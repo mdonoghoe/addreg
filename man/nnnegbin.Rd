@@ -11,7 +11,7 @@ where each of the mean coefficients is restricted to be non-negative.
 \usage{
 nnnegbin(y, x, standard, offset, start, control = addreg.control(),
          accelerate = c("em", "squarem", "pem", "qn"),
-         control.accelerate = list())
+         control.method = list())
 }
 \arguments{
   \item{y}{
@@ -43,7 +43,7 @@ nnnegbin(y, x, standard, offset, start, control = addreg.control(),
   \code{"squarem"}, \code{"pem"} or \code{"qn"}. See \code{\link[turboEM]{turboem}}
   for further details. Note that \code{"decme"} is not permitted.
 }
-  \item{control.accelerate}{
+  \item{control.method}{
 	a list of control parameters for the acceleration algorithm. See \code{\link[turboEM]{turboem}}
 	for details of the parameters that apply to each algorithm. If not specified, the defaults are used.
 }

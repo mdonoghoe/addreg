@@ -49,10 +49,10 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                          allref$monotonic, design.all[param,])
       if (family$family == "poisson")
         thismodel <- nnpois(Y, X, standard, offset, if (param == 1) allref$start.new else NULL,
-                            control2, accelerate, list(control.method))
+                            control2, accelerate, control.method)
       else if (substr(family$family, 1, 7) == "negbin1")
         thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL,
-                              control2, accelerate, list(control.method))
+                              control2, accelerate, control.method)
       else if (family$family == "binomial")
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
                             model, "cem", accelerate, control.method)
