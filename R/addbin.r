@@ -1,5 +1,5 @@
 addbin <- function(y, x, start = NULL, control = list(), allref,
-                   model = TRUE, method, accelerate, control.accelerate)
+                   model = TRUE, method, accelerate, control.method)
 {
   control <- do.call("addreg.control", control)
   x <- as.matrix(x)
@@ -66,7 +66,7 @@ addbin <- function(y, x, start = NULL, control = list(), allref,
   model.addpois <- addreg(formula.addpois, mono = unname(mono), family = poisson, 
                           data = data.new, standard = N, start = start.new, 
                           control = control, method = method, accelerate = accelerate,
-                          control.accelerate = control.accelerate, warn = FALSE, model = model)
+                          control.method = control.method, warn = FALSE, model = model)
     
   if(nvars == 1) {
     coefs <- model.addpois$coefficients[1]

@@ -55,7 +55,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
                               control2, accelerate, list(control.method))
       else if (family$family == "binomial")
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
-                            model, "cem", accelerate, control.accelerate)
+                            model, "cem", accelerate, control.method)
       if (!thismodel$converged) allconv <- FALSE
       totaliter <- totaliter + thismodel$iter
       if (control$trace > 0 & control$trace <= 1)
