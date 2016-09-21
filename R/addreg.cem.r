@@ -20,10 +20,10 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
     X <- model.matrix(allref$terms, allref$data)
     if (family$family == "poisson")
       best.model <- nnpois(Y, X, standard, offset, allref$start.new, control2,
-                           accelerate, list(control.method))
+                           accelerate, control.method)
     else if (substr(family$family, 1, 7) == "negbin1")
       best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2,
-                             accelerate, list(control.method))
+                             accelerate, control.method)
     else
       best.model <- addbin(Y, X, allref$start.new, control, allref, model,
                            "cem", accelerate, control.method)
