@@ -5,7 +5,7 @@ addreg
 
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/addreg)](https://cran.r-project.org/package=addreg)
 
-`logbin` provides methods for fitting identity-link GLMs and GAMs to discrete data, using EM-type algorithms with more stable convergence properties than standard methods.
+`addreg` provides methods for fitting identity-link GLMs and GAMs to discrete data, using EM-type algorithms with more stable convergence properties than standard methods.
 
 An example of periodic non-convergence using `glm` (run with `trace = TRUE` to see deviance at each iteration):
 
@@ -31,13 +31,13 @@ t.cem <- system.time(
 )
 ```
 
-...but it can take a while. Using an overparameterised EM approach removes the need to run 2<sup>3</sup> = 8 separate EM algorithms:
+...but it can take a while. Using an overparameterised EM approach removes the need to run \(2^3 = 8\) separate EM algorithms:
 
 ``` r
 t.em <- system.time(fit.em <- update(fit.cem, method = "em"))
 ```
 
-while generic EM acceleration algorithms from the `turboEM` package --- implemented in version ≥ 3.0 --- can speed this up further still:
+while generic EM acceleration algorithms from the `turboEM` package --- implemented in version \(\geq\) 3.0 --- can speed this up further still:
 
 ``` r
 t.cem.acc <- system.time(fit.cem.acc <- update(fit.cem, accelerate = "squarem"))
@@ -47,11 +47,11 @@ t.em.acc <- system.time(fit.em.acc <- update(fit.em, accelerate = "squarem"))
 Comparison of results:
 
     #>         converged    logLik iterations time
-    #> glm         FALSE -518.2579        500 0.04
-    #> cem          TRUE -500.8886       6101 0.55
-    #> em           TRUE -500.8886       1680 0.14
-    #> cem.acc      TRUE -500.8886        128 0.13
-    #> em.acc       TRUE -500.8886         38 0.03
+    #> glm         FALSE -518.2579        500 0.06
+    #> cem          TRUE -500.8886       6101 0.69
+    #> em           TRUE -500.8886       1680 0.13
+    #> cem.acc      TRUE -500.8886        128 0.11
+    #> em.acc       TRUE -500.8886         38 0.05
 
 The combinatorial EM algorithms for identity-link binomial (Donoghoe and Marschner, 2014) and negative binomial (Donoghoe and Marschner, 2016) models are also available, using `family = binomial` and `family = negbin1`, respectively.
 

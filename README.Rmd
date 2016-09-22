@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/addreg)](https://cran.r-project.org/package=addreg)
 
-`logbin` provides methods for fitting identity-link GLMs and GAMs to discrete data, using EM-type algorithms with more stable convergence properties than standard methods.
+`addreg` provides methods for fitting identity-link GLMs and GAMs to discrete data, using EM-type algorithms with more stable convergence properties than standard methods.
 
 An example of periodic non-convergence using `glm` (run with `trace = TRUE` to see deviance at each iteration):
 
