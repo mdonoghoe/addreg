@@ -1,8 +1,9 @@
 addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset, na.action,
-                           offset, control = list(...), model = TRUE, 
+                           offset, control = list(...), model = TRUE, method = c("cem", "em"),
                            accelerate = c("em", "squarem", "pem", "qn"),
                            control.method = list(), model.addreg = FALSE, ...) {
   call <- match.call()
+  method <- match.arg(method)
   accelerate <- match.arg(accelerate)
   
   if(is.character(family))
@@ -61,7 +62,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   for(k in seq_len(n.allknots)) {
     if(control$trace > 0)
       cat("Knots: ",paste(allknots[k,],collapse=", "),"\n",sep="")
-    allref <- addreg.smooth.allref(mt, mdata, mono, family, gp, allknots[k,])
+    allref <- addreg.smooth.allref(mt, mdata, method, mono, family, gp, allknots[k,])
     design.numref <- sapply(allref$allref, length)
     design.all <- expand.grid(lapply(design.numref, seq_len))
     nparam <- nrow(design.all)
