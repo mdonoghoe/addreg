@@ -34,9 +34,11 @@ addreg.smooth.allref <- function(object, data = environment(object), type = c("c
       if (monotonic[smth]) allref[[smth]][[1]] <- 1:(num.knots[smth]+3)
       else {
         if (family$family != "binomial") 
-          allref[[smth]] <- as.list(1:(num.knots[smth]+3))
+          if (type == "cem") allref[[smth]] <- as.list(1:(num.knots[smth]+3))
+          else allref[[smth]][[1]] <- 0
         else
-          allref[[smth]] <- combinat::permn(1:(num.knots[smth]+3))
+          if (type == "cem") allref[[smth]] <- combinat::permn(1:(num.knots[smth]+3))
+          else allref[[smth]][[1]] <- 0
       }
     } else
       stop("smooth type not recognized. Only B() and Iso() are supported by addreg.smooth")
