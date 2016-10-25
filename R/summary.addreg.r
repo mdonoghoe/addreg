@@ -1,7 +1,8 @@
 summary.addreg <- function(object, correlation = FALSE, ...) {
   df.r <- object$df.residual
-  p <- object$rank - as.numeric(substr(object$family$family,1,7) == "negbin1")
+  #p <- object$rank - as.numeric(substr(object$family$family,1,7) == "negbin1")
   coef.p <- object$coefficients
+  p <- length(object$coefficients)
   dispersion <- 1
   
   if(!object$boundary) {
