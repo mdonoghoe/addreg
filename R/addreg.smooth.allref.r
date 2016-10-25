@@ -38,7 +38,7 @@ addreg.smooth.allref <- function(object, data = environment(object), type = c("c
           else allref[[smth]][[1]] <- 0
         else
           if (type == "cem") allref[[smth]] <- combinat::permn(1:(num.knots[smth]+3))
-          else allref[[smth]][[1]] <- 0
+          else allref[[smth]][[1]] <- -(num.knots[smth]+3)
       }
     } else
       stop("smooth type not recognized. Only B() and Iso() are supported by addreg.smooth")
