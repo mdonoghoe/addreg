@@ -68,7 +68,7 @@ addreg.smooth.design <- function(interpret, type = c("cem", "em"), allref, desig
                 xnames <- c(xnames, paste(perm.ord[, j], collapse = "."))
               }
             }
-            colnames(x.new) <- xnames
+            colnames(x.new) <- paste(smthlabel, xnames, sep = "")
           }
         }
       }
