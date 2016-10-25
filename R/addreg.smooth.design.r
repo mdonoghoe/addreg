@@ -54,17 +54,24 @@ addreg.smooth.design <- function(interpret, type = c("cem", "em"), allref, desig
       colnames(B) <- paste(smthlabel, seq_len(ncol(B)), sep = "")
       
       ref <- allref$allref[[smth]][[as.numeric(design.param[smth])]]
-      if (length(ref)==1)
+      if (length(ref)==1) {
         if (type == "cem") x.new <- B[,-ref, drop=FALSE] 
-        else if (ref == 0) x.new <- B
-        else if (ref < 1) {
-          nsplines <- -ref
-          x.new <- NULL
-          for (i in seq_len(nsplines - 1)) {
-            perm.ord <- combinat::combn(nsplines, i)
-            for (j in seq_len(ncol(perm.ord))) x.new <- cbind(x.new, rowSums(B[, perm.ord[, j], drop = FALSE]))
+        else {
+          if (ref == 0) x.new <- B
+          else if (ref < 1) {
+           nsplines <- -ref
+            x.new <- xnames <- NULL
+            for (i in seq_len(nsplines - 1)) {
+              perm.ord <- combinat::combn(nsplines, i)
+              for (j in seq_len(ncol(perm.ord))) {
+                x.new <- cbind(x.new, rowSums(B[, perm.ord[, j], drop = FALSE]))
+                xnames <- c(xnames, paste(perm.ord[, j], collapse = "."))
+              }
+            }
+            colnames(x.new) <- xnames
           }
         }
+      }
       else {
         x.temp <- B[,ref][,-1, drop=FALSE]
         x.new <- x.temp
