@@ -142,7 +142,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   }  
   
   reparam.call <- call("addreg.smooth.reparameterise", coefficients = bestk.model$coefficients,
-                       interpret = gp, allref = bestk.allref, knots = bestk.knots, 
+                       interpret = gp, type = method, allref = bestk.allref, knots = bestk.knots, 
                        design.knots = allknots[bestk, , drop = FALSE], 
                        design.param = bestk.param)
 

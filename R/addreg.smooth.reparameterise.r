@@ -1,6 +1,8 @@
-addreg.smooth.reparameterise <- function(coefficients, interpret, allref, knots, design.knots, design.param,
-                                            subset, na.action) {
-	coefs.new <- coefficients
+addreg.smooth.reparameterise <- function(coefficients, interpret, type = c("cem", "em"),
+                                         allref, knots, design.knots, design.param,
+                                         subset, na.action) {
+	type <- match.arg(type)
+  coefs.new <- coefficients
 	coefs.new.int <- coefs.new[1]
 
 	smthterms <- sapply(interpret$smooth.spec,"[[","term")
