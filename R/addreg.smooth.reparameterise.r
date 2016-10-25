@@ -4,6 +4,7 @@ addreg.smooth.reparameterise <- function(coefficients, interpret, type = c("cem"
 	type <- match.arg(type)
   coefs.new <- coefficients
 	coefs.new.int <- coefs.new[1]
+	coefs.new.rm <- NULL
 
 	smthterms <- sapply(interpret$smooth.spec,"[[","term")
     smthnames <- NULL
@@ -27,6 +28,7 @@ addreg.smooth.reparameterise <- function(coefficients, interpret, type = c("cem"
 			  } else if (ref == 0) {
 			    coefs.new.int <- coefs.new.int + coefs.smth[1]
 			    coefs.smth.new <- coefs.smth[-1] - coefs.smth[1]
+			    coefs.new.rm <- c(coefs.new.rm, which.smth[1])
 			  } else if (ref < 0) {
 			    nsplines <- -ref
 			    coefs.smth.temp <- rep(0, nsplines)
@@ -40,6 +42,7 @@ addreg.smooth.reparameterise <- function(coefficients, interpret, type = c("cem"
 			    }
 			    coefs.new.int <- coefs.new.int + coefs.smth.temp[1]
 			    coefs.smth.new <- (coefs.smth.temp - coefs.smth.temp[1])[-1]
+			    coefs.new.rm <- c(coefs.new.rm, which.smth[c(-2:-nsplines)])
 			  }
 			} else {
 				coefs.smth.temp <- c(0, cumsum(coefs.smth))
@@ -49,11 +52,22 @@ addreg.smooth.reparameterise <- function(coefficients, interpret, type = c("cem"
 			}
 			names.smth.new <- paste(smthlabel, 2:(num.knots-3), sep = "")
 		}
-		coefs.new[which.smth] <- coefs.smth.new
-		names(coefs.new)[which.smth] <- names.smth.new
+		if (smthtype == "B.smooth" && length(ref) == 1 && type == "em") {
+		  if (ref == 0) {
+		    coefs.new[which.smth] <- c(0, coefs.smth.new)
+		    names(coefs.new)[which.smth] <- c("TEMP", names.smth.new)
+		  } else if (ref < 1) {
+		    coefs.new[which.smth] <- c(0, coefs.smth.new, rep(0, 2^nsplines - 2 - nsplines))
+		    names(coefs.new)[which.smth] <- c("TEMP", names.smth.new, rep("TEMP", 2^nsplines - 2 - nsplines))
+		  }
+		} else {
+		  coefs.new[which.smth] <- coefs.smth.new
+		  names(coefs.new)[which.smth] <- names.smth.new
+		}
 	}
 	
 	coefs.new[1] <- coefs.new.int
+	if (!is.null(coefs.new.rm)) coefs.new <- coefs.new[-coefs.new.rm]
     
     dummy.design <- rep(1,length(design.param))
     names(dummy.design) <- names(design.param)
