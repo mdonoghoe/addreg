@@ -40,7 +40,7 @@ addreg.smooth.reparameterise <- function(coefficients, interpret, allref, knots,
     dummy.allref <- allref
     for(smth in names(allref$allref))
         dummy.allref$allref[[smth]][[1]] <- 1
-    modelspec <- addreg.smooth.design(interpret, dummy.allref, design.knots, dummy.design)
+    modelspec <- addreg.smooth.design(interpret, "cem", dummy.allref, design.knots, dummy.design)
     data.new <- modelspec$data
     dummy.frame.call <- call("model.frame", formula = eval(modelspec$formula), data = as.name("data.new"))
     dummy.frame.call$drop.unused.levels <- TRUE

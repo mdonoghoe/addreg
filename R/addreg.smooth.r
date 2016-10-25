@@ -75,7 +75,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
     
     for (param in seq_len(nparam)) {
       if(control$trace > 1) cat("addreg.smooth parameterisation ",param,"/",nparam,"\n",sep="")
-      modelspec <- addreg.smooth.design(gp, allref, allknots[k, , drop = FALSE], 
+      modelspec <- addreg.smooth.design(gp, method, allref, allknots[k, , drop = FALSE], 
                                         design.all[param, , drop = FALSE])
       data.new <- modelspec$data
       data.new[["(offset)"]] = os
