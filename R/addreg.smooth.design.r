@@ -1,4 +1,6 @@
-addreg.smooth.design <- function(interpret, allref, design.knots, design.param) {
+addreg.smooth.design <- function(interpret, type = c("cem", "em"), allref, design.knots, design.param) {
+  
+  type = match.arg(type)
   
   p.env <- environment(interpret$full.formula)
   formula.lhs <- Reduce(paste,deparse(interpret$full.formula[[2L]]))
