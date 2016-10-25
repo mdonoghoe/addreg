@@ -174,7 +174,7 @@ m1 <- addreg.smooth(cbind(y, n-y) ~ B(x1, knot.range = 1:3) + factor(x2), mono =
   data = dat, family = binomial, trace = 1)
 \donttest{
 plot(m1, at = data.frame(x2 = 0:1))
-points(dat$x1, dat$y / dat$n)
+points(dat$x1, dat$y / dat$n, col = rainbow(2)[dat$x2 + 1], pch = 20)
 }
 }
 \keyword{ regression }
