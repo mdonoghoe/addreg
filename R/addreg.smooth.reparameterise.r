@@ -20,9 +20,27 @@ addreg.smooth.reparameterise <- function(coefficients, interpret, type = c("cem"
 			ref <- allref$allref[[smth]][[as.numeric(design.param[smth])]]
 			num.knots <- length(knots[[smth]])
 			if(length(ref) == 1) {
-				coefs.smth.temp <- append(coefs.smth, 0, after = ref - 1)
-				coefs.new.int <- coefs.new.int + coefs.smth.temp[1]
-				coefs.smth.new <- (coefs.smth.temp - coefs.smth.temp[1])[-1]
+			  if (type == "cem") {
+  				coefs.smth.temp <- append(coefs.smth, 0, after = ref - 1)
+  				coefs.new.int <- coefs.new.int + coefs.smth.temp[1]
+  				coefs.smth.new <- (coefs.smth.temp - coefs.smth.temp[1])[-1]
+			  } else if (ref == 0) {
+			    coefs.new.int <- coefs.new.int + coefs.smth[1]
+			    coefs.smth.new <- coefs.smth[-1] - coefs.smth[1]
+			  } else if (ref < 0) {
+			    nsplines <- -ref
+			    coefs.smth.temp <- rep(0, nsplines)
+			    idx <- 1
+			    for (i in seq_len(nsplines - 1)) {
+			      perm.ord <- combinat::combn(nsplines, i)
+			      for (j in seq_len(ncol(perm.ord))) {
+			        coefs.smth.temp[perm.ord[,j]] <- coefs.smth.temp[perm.ord[,j]] + coefs.smth[idx]
+			        idx <- idx + 1
+			      }
+			    }
+			    coefs.new.int <- coefs.new.int + coefs.smth.temp[1]
+			    coefs.smth.new <- (coefs.smth.temp - coefs.smth.temp[1])[-1]
+			  }
 			} else {
 				coefs.smth.temp <- c(0, cumsum(coefs.smth))
 				coefs.smth.ord <- coefs.smth.temp[order(ref)]
