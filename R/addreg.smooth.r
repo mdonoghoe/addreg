@@ -57,7 +57,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   bestk.allref <- NULL
   bestk.param <- NULL
   bestk.knots <- NULL
-  totaliter <- 0
+  allconvk <- TRUE
     
   for(k in seq_len(n.allknots)) {
     if(control$trace > 0)
@@ -89,10 +89,9 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
       if (!is.null(std)) modelf$standard <- as.name("(standard)")
       if (!missing(subset)) modelf$subset <- subset
       if (!missing(na.action)) modelf$na.action <- na.action
-        modelf$model <- TRUE
+      modelf$model <- TRUE
       thismodel <- eval(modelf)
       if(!thismodel$converged) allconv <- FALSE
-      totaliter <- totaliter + thismodel$iter[1]
       if(thismodel$loglik > best.loglik) {
         best.model <- thismodel
         best.loglik <- thismodel$loglik
@@ -110,6 +109,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
         warning(gettextf("%s(%s): algorithm did not converge within %d iterations -- increase 'maxit' or try with 'accelerate = \"em\"'.",
                          best.model$method, accelerate, control$maxit),
                 call. = FALSE)
+    if (!allconv) allconvk <- FALSE
     
     reparam.call <- call("addreg.smooth.reparameterise", coefficients = best.model$coefficients,
                          interpret = gp, type = method, allref = allref, knots = best.knots, 
@@ -178,7 +178,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
                deviance = bestk.model$deviance, loglik = bestk.model$loglik,
                aic = bestk.model$aic - 2 * vardiff, aic.c = aic.c,
                null.deviance = bestk.model$null.deviance, 
-               iter = c(totaliter, bestk.model$iter[2]),
+               iter = bestk.model$iter,
                prior.weights = bestk.model$prior.weights, weights = bestk.model$weights,
                df.residual = bestk.model$df.residual + vardiff, df.null = bestk.model$df.null,
                y = bestk.model$y, x = reparam$design)
@@ -186,7 +186,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   if(model.addreg) fit2$model.addreg <- bestk.model
   xminmax.smooth <- bestk.model$xminmax
   xminmax.smooth[reparam$smoothnames] <- NULL
-  fit3 <- list(converged = bestk.model$converged, boundary = bestk.model$boundary,
+  fit3 <- list(converged = allconvk, boundary = bestk.model$boundary,
                na.action = attr(reparam$mf, "na.action"), call = call, formula = formula,
                full.formula = gp$full.formula, terms = mt, terms.full = reparam$mt, 
                data = data, offset = os, standard = bestk.model$standard, 
