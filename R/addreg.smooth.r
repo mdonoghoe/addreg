@@ -110,13 +110,27 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
         warning(gettextf("%s(%s): algorithm did not converge within %d iterations -- increase 'maxit' or try with 'accelerate = \"em\"'.",
                          best.model$method, accelerate, control$maxit),
                 call. = FALSE)
+    
+    reparam.call <- call("addreg.smooth.reparameterise", coefficients = best.model$coefficients,
+                         interpret = gp, type = method, allref = allref, knots = best.knots, 
+                         design.knots = allknots[k, , drop = FALSE], 
+                         design.param = best.param)
+    
+    if(!missing(subset)) reparam.call$subset <- subset
+    if(!missing(na.action)) reparam.call$na.action <- na.action
+    reparam <- eval(reparam.call)
+    
+    nvars <- length(reparam$coefs)
+    vardiff <- length(best.model$coefficients) - nvars
+    aic.c <- best.model$aic - 2 * vardiff + 2 * nvars * (nvars + 1) / (NROW(best.model$y) - nvars - 1)
                 
     if(control$trace > 0)
-      cat("AIC_c:",best.model$aic.c,"\n")
-    if(best.model$aic.c < bestk.aic) {
+      cat("AIC_c:", aic.c, "\n")
+    
+    if(aic.c < bestk.aic) {
       bestk <- k
       bestk.model <- best.model
-      bestk.aic <- best.model$aic.c
+      bestk.aic <- aic.c
       bestk.allref <- allref
       bestk.param <- best.param
       bestk.knots <- best.knots
@@ -150,6 +164,10 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   if(!missing(na.action)) reparam.call$na.action <- na.action
   reparam <- eval(reparam.call)
   
+  nvars <- length(reparam$coefs)
+  vardiff <- length(bestk.model$coefficients) - nvars
+  aic.c <- bestk.model$aic - 2 * vardiff + 2 * nvars * (nvars + 1) / (NROW(bestk.model$y) - nvars - 1)
+  
   fit <- list(coefficients = reparam$coefs)
   if(substr(family$family,1,7) == "negbin1") fit$scale <- bestk.model$scale
   
@@ -158,11 +176,11 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
                rank = bestk.model$rank, family = bestk.model$family,
                linear.predictors = bestk.model$linear.predictors,
                deviance = bestk.model$deviance, loglik = bestk.model$loglik,
-               aic = bestk.model$aic, aic.c = bestk.model$aic.c,
+               aic = bestk.model$aic - 2 * vardiff, aic.c = aic.c,
                null.deviance = bestk.model$null.deviance, 
                iter = c(totaliter, bestk.model$iter[2]),
                prior.weights = bestk.model$prior.weights, weights = bestk.model$weights,
-               df.residual = bestk.model$df.residual, df.null = bestk.model$df.null,
+               df.residual = bestk.model$df.residual + vardiff, df.null = bestk.model$df.null,
                y = bestk.model$y, x = reparam$design)
   if(model) fit2$model <- reparam$mf
   if(model.addreg) fit2$model.addreg <- bestk.model
