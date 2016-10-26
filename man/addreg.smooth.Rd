@@ -12,8 +12,9 @@ terms.
 \usage{
 addreg.smooth(formula, mono = NULL, family, data, standard, subset, 
               na.action, offset, control = list(...), model = TRUE, 
+              model.addreg = FALSE, method = c("cem", "em"), 
               accelerate = c("em", "squarem", "pem", "qn"),
-              control.method = list(), model.addreg = FALSE, ...)
+              control.method = list(), ...)
 }
 \arguments{
   \item{formula}{
@@ -94,6 +95,17 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
 	(and, for binomial models, the equivalent Poisson model)
 	should be included as a component of the returned value.
 }
+  \item{model.addreg}{
+	a logical value indicating whether the fitted \code{addreg}
+	object should be included as a component of the returned value.
+}
+  \item{method}{
+    a character string that determines which EM-type algorithm to use
+  to find the MLE: \code{"cem"} for the combinatorial EM algorithm,
+  which cycles through a sequence of constrained parameter spaces, or
+  \code{"em"} for a single EM algorithm based on an overparameterised
+  model.
+}
   \item{accelerate}{
     a character string that determines the acceleration
   algorithm to be used, (partially) matching one of \code{"em"} (no acceleration --- the default), 
@@ -105,10 +117,6 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
     the \code{control.method} argument of \code{\link[turboEM]{turboem}}.
   
     If any items are not specified, the defaults are used.
-}
-  \item{model.addreg}{
-	a logical value indicating whether the fitted \code{addreg}
-	object should be included as a component of the returned value.
 }
   \item{\dots}{
 	arguments to be used to form the default
