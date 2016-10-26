@@ -157,6 +157,7 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
   residuals <- (y - mu) / fam$mu.eta(eta)
   
   names(coefnew.mu) <- xnames
+  names(coefnew.phi) <- NULL
   names(residuals) <- names(mu) <- names(eta) <- names(y) <- ynames
   
   dev.new <- sum(fam$dev.resids(y, mu, weights))
