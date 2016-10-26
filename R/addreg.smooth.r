@@ -1,7 +1,7 @@
 addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset, na.action,
-                           offset, control = list(...), model = TRUE, method = c("cem", "em"),
-                           accelerate = c("em", "squarem", "pem", "qn"),
-                           control.method = list(), model.addreg = FALSE, ...) {
+                           offset, control = list(...), model = TRUE, model.addreg = FALSE, 
+                           method = c("cem", "em"), accelerate = c("em", "squarem", "pem", "qn"),
+                           control.method = list(), ...) {
   call <- match.call()
   method <- match.arg(method)
   accelerate <- match.arg(accelerate)
