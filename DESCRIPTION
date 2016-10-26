@@ -3,7 +3,7 @@ Title: Additive Regression for Discrete Data
 Description: Methods for fitting identity-link GLMs and GAMs to discrete data,
     using EM-type algorithms with more stable convergence properties than standard methods.
 Version: 3.0.9000
-Date: 2016-10-25
+Date: 2016-10-26
 Authors@R: c(person("Mark W.", "Donoghoe", email = "markdonoghoe@gmail.com", rol = c("aut","cre")),
              person("Ian C.", "Marschner", rol = "ths"))
 Depends: R (>= 3.0.1)
