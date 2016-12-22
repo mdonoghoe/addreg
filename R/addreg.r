@@ -18,7 +18,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
   }
     
   if (family$link!="identity" | !(family$family %in% c("poisson","binomial") | 
-                                  substr(family$family,1,7) == "negbin1") | substr(family$family,1,6) == "gamma1")
+                                  substr(family$family,1,7) == "negbin1" | substr(family$family,1,6) == "gamma1"))
     stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity), gamma1(identity)")
     
   if (missing(data)) data <- environment(formula)
