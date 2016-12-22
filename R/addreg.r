@@ -10,7 +10,7 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
   if (is.character(family))
     family <- get(family, mode = "function", envir = parent.frame())
   if (is.function(family))
-    if (identical(family, negbin1)) family <- family(link = "identity", phi = NA)
+    if (identical(family, negbin1) | identical(family, gamma1)) family <- family(link = "identity", phi = NA)
     else family <- family(link = "identity")
   if (is.null(family$family)) {
     print(family)
