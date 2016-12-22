@@ -3,9 +3,8 @@ negbin1 <- function (link, phi = stop("'phi' must be given"))
 	.Phi <- phi
 	env <- new.env(parent = .GlobalEnv)
 	assign(".Phi", phi, envir = env)
-	stats <- make.link("identity")
+	lnk <- make.link("identity")
 	variance <- function(mu) mu * (1 + .Phi)
-  valideta <- function(eta) all(eta >= 0)
 	validmu <- function(mu) all(mu >= 0)
 	dev.resids <- function(y, mu, wt) {
 		r <- (mu - y)/.Phi * log(1 + .Phi)
@@ -29,9 +28,9 @@ negbin1 <- function (link, phi = stop("'phi' must be given"))
 	}
     fname <- paste("negbin1 (phi = ", format(round(phi, 4)), ")", sep = "")
 	environment(variance) <- environment(validmu) <- environment(dev.resids) <- environment(aic) <- environment(simfun) <- env
-	structure(list(family = fname, link = "identity", linkfun = stats$linkfun,
-		linkinv = stats$linkinv, variance = variance, dev.resids = dev.resids,
-		aic = aic, mu.eta = stats$mu.eta, initialize = initialize,
-		valid.mu = validmu, valid.eta = valideta, simulate = simfun),
+	structure(list(family = fname, link = "identity", linkfun = lnk$linkfun,
+		linkinv = lnk$linkinv, variance = variance, dev.resids = dev.resids,
+		aic = aic, mu.eta = lnk$mu.eta, initialize = initialize,
+		valid.mu = validmu, valid.eta = lnk$valideta, simulate = simfun),
 		class = "family")
 }
