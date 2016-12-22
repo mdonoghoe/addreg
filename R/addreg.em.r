@@ -5,6 +5,7 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
   
   if (family$family == "poisson") method <- "nnpois"
   else if (substr(family$family,1,7) == "negbin1") method <- "nnnegbin"
+  else if (substr(family$family,1,6) == "gamma1") method <- "nngamma"
   else if (family$family == "binomial") method <- "addbin"
   
   allref <- addreg.allref(mt, mf, "em", mono, family, start)
@@ -25,11 +26,13 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
   else if (substr(family$family, 1, 7) == "negbin1")
     thismodel <- nnnegbin(Y, X, standard, offset, allref$start.new, control2, accelerate,
                           control.method)
+  else if (substr(family$family, 1, 6) == "gamma1")
+    thismodel <- nngamma(Y, X, offset, allref$start.new, control2, accelerate, control.method)
   else if (family$family == "binomial")
     thismodel <- addbin(Y, X, allref$start.new, control, allref, model, "em", accelerate, control.method)
     
   if (control$trace > 0 & control$trace <= 1)
-    if (substr(family$family, 1, 7) == "negbin1")
+    if (substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1")
       cat("Log-likelihood =", thismodel$loglik, "Iterations -", thismodel$iter, "\n")
     else if (method != "addbin")
       cat("Deviance =", thismodel$deviance, "Iterations -", thismodel$iter, "\n")
@@ -47,8 +50,8 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
     coefs.boundary <- reparam$coefs.boundary
   }
   
-  nvars <- length(coefs) + as.numeric(substr(family$family, 1, 7) == "negbin1")
-  vardiff <- length(nn.coefs) + as.numeric(substr(family$family, 1, 7) == "negbin1") - nvars
+  nvars <- length(coefs) + as.numeric(substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1")
+  vardiff <- length(nn.coefs) + as.numeric(substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1") - nvars
   aic.c <- thismodel$aic - 2 * vardiff + 2 * nvars * (nvars + 1) / (NROW(Y) - nvars - 1)
   
   boundary <- any(coefs.boundary < control$bound.tol)
@@ -73,7 +76,7 @@ addreg.em <- function(mt, mf, Y, standard, offset, mono, family, start, control,
   }
   
   fit <- list(coefficients = coefs)
-  if (substr(family$family, 1, 7) == "negbin1") fit$scale <- thismodel$scale
+  if (substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1") fit$scale <- thismodel$scale
   
   fit2 <- list(residuals = thismodel$residuals, fitted.values = thismodel$fitted.values,
                rank = nvars, family = thismodel$family, linear.predictors = thismodel$linear.predictors, 

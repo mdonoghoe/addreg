@@ -17,8 +17,9 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
     stop("'family' not recognized")
   }
     
-  if (family$link!="identity" | !(family$family %in% c("poisson","binomial") | substr(family$family,1,7) == "negbin1"))
-    stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity)")
+  if (family$link!="identity" | !(family$family %in% c("poisson","binomial") | 
+                                  substr(family$family,1,7) == "negbin1") | substr(family$family,1,6) == "gamma1")
+    stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity)", "gamma1(identity)")
     
   if (missing(data)) data <- environment(formula)
   control <- do.call("addreg.control", control)
@@ -58,8 +59,8 @@ addreg <- function (formula, mono = NULL, family, data, standard, subset, na.act
       if (length(standard) != NROW(Y))
         stop(gettextf("number of values in 'standard' is %d should equal %d (number of observations)",
                       length(standard), NROW(Y)), domain = NA)
-      if (family$family == "binomial")
-        warning("'standard' is not used for binomial family", call. = FALSE)
+      if (family$family == "binomial" | substr(family$family, 1, 6) == "gamma1")
+        warning("'standard' is not used for the binomial or gamma1 families", call. = FALSE)
       if (any(standard <= 0))
         stop("standard must be positive")
     }

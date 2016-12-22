@@ -29,7 +29,7 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
 	
 	npar <- sum(as.numeric(!isF))
 	if (any(isF)) npar <- npar + sum(sapply(data[isF], function(x) nlevels(factor(x)) - 1))
-	if (substr(family$family,1,7) == "negbin1") npar <- npar + 1
+	if (substr(family$family,1,7) == "negbin1" | substr(family$family,1,6) == "gamma1") npar <- npar + 1
     
   if (missing(mono)) mono <- rep(FALSE, nvar)
   if (is.null(mono)) mono <- rep(FALSE, nvar)
@@ -49,7 +49,7 @@ addreg.allref <- function(object, data = environment(object), type = c("cem", "e
 		start.orig <- start
 		start.new.int <- start.orig[1]
 		start.new.other <- start.orig[-1]
-		if (substr(family$family,1,7) == "negbin1") {
+		if (substr(family$family,1,7) == "negbin1" | substr(family$family,1,6) == "gamma1") {
 			start.new.scale <- start.new.other[length(start.new.other)]
 			start.new.other <- start.new.other[-length(start.new.other)]
 		}

@@ -5,6 +5,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
   
   if (family$family == "poisson") method <- "nnpois"
   else if (substr(family$family,1,7) == "negbin1") method <- "nnnegbin"
+  else if (substr(family$family,1,6) == "gamma1") method <- "nngamma"
   else if (family$family == "binomial") method <- "addbin"
   
   allref <- addreg.allref(mt, mf, "cem", mono, family, start)
@@ -24,6 +25,9 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
     else if (substr(family$family, 1, 7) == "negbin1")
       best.model <- nnnegbin(Y, X, standard, offset, allref$start.new, control2,
                              accelerate, control.method)
+    else if (substr(family$family, 1, 6) == "gamma1")
+      best.model <- nngamma(Y, X, offset, allref$start.new, control2, accelerate,
+                            control.method)
     else
       best.model <- addbin(Y, X, allref$start.new, control, allref, model,
                            "cem", accelerate, control.method)
@@ -32,7 +36,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
     allconv <- best.model$converged
     totaliter <- totaliter + best.model$iter
     if (control$trace > 0 & control$trace <= 1) {
-      if (substr(family$family, 1, 7) == "negbin1")
+      if (substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1")
         cat("Log-likelihood =", best.model$loglik,
             "Iterations -", best.model$iter, "\n")
       else if (method != "addbin")
@@ -53,13 +57,16 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
       else if (substr(family$family, 1, 7) == "negbin1")
         thismodel <- nnnegbin(Y, X, standard, offset, if (param == 1) allref$start.new else NULL,
                               control2, accelerate, control.method)
+      else if (substr(family$family, 1, 6) == "gamma1")
+        thismodel <- nngamma(Y, X, offset, if (param == 1) allref$start.new else NULL,
+                             control2, accelerate, control.method)
       else if (family$family == "binomial")
         thismodel <- addbin(Y, X, if (param == 1) allref$start.new else NULL, control, allref,
                             model, "cem", accelerate, control.method)
       if (!thismodel$converged) allconv <- FALSE
       totaliter <- totaliter + thismodel$iter
       if (control$trace > 0 & control$trace <= 1)
-        if (substr(family$family, 1, 7) == "negbin1")
+        if (substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1")
           cat("Log-likelihood =", thismodel$loglik, "Iterations -", thismodel$iter, "\n")
         else if (method != "addbin")
           cat("Deviance =", thismodel$deviance, "Iterations -", thismodel$iter, "\n")
@@ -107,7 +114,7 @@ addreg.cem <- function(mt, mf, Y, standard, offset, mono, family, start, control
   }
   
   fit <- list(coefficients = coefs)
-  if (substr(family$family, 1, 7) == "negbin1") fit$scale <- best.model$scale
+  if (substr(family$family, 1, 7) == "negbin1" | substr(family$family, 1, 6) == "gamma1") fit$scale <- best.model$scale
   
   fit2 <- list(residuals = best.model$residuals, fitted.values = best.model$fitted.values,
                rank = best.model$rank, family = best.model$family,
