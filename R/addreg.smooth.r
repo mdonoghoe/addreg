@@ -12,6 +12,9 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
     if (identical(family, negbin1)) {
       family <- family(link = "identity", phi = NA)
       famname <- "negbin1"
+    } else if (identical(family, gamma1)) {
+      family <- family(link = "identity", phi = NA)
+      famname <- "gamma1"
     }
     else {
       family <- family(link = "identity")
@@ -23,8 +26,8 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   }
     
   if(family$link!="identity" | !(family$family %in% c("poisson","binomial") | 
-     substr(family$family,1,7) == "negbin1"))
-      stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity)")
+     substr(family$family,1,7) == "negbin1" | substr(family$family,1,6) == "gamma"))
+      stop("family(link) must be one of: poisson(identity), binomial(identity), negbin1(identity), gamma1(identity)")
   
   if(missing(data)) data <- environment(formula)
   
@@ -169,7 +172,7 @@ addreg.smooth <- function (formula, mono = NULL, family, data, standard, subset,
   aic.c <- bestk.model$aic - 2 * vardiff + 2 * nvars * (nvars + 1) / (NROW(bestk.model$y) - nvars - 1)
   
   fit <- list(coefficients = reparam$coefs)
-  if(substr(family$family,1,7) == "negbin1") fit$scale <- bestk.model$scale
+  if(substr(family$family,1,7) == "negbin1" | substr(family$family,1,6) == "gamma1") fit$scale <- bestk.model$scale
   
   fit2 <- list(residuals = bestk.model$residuals,
                fitted.values = bestk.model$fitted.values,
