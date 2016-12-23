@@ -54,7 +54,7 @@ nngamma <- function(y, x, offset, start, control = addreg.control(),
     x.theta <- theta * x
     elogbeta <- x.theta
     elogbeta[x.theta == 0] <- 1
-    elogbeta[x.theta != 0] <- digamma(x.theta) - digamma(a.fit)
+    elogbeta[x.theta != 0] <- digamma(x.theta[x.theta != 0]) - digamma(a.fit[x.theta != 0])
     elogbeta + log(y)
   }
   
