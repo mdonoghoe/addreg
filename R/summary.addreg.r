@@ -49,6 +49,25 @@ summary.addreg <- function(object, correlation = FALSE, ...) {
         covmat.unscaled <- matrix(NaN, p, p)
         var.phi <- NaN
       }
+    } else if(substr(object$family$family,1,6) == "gamma1") {
+      x <- object$x
+      y <- object$y
+      mu <- object$fitted.values
+      dgmu <- digamma(mu)
+      tgmu <- trigamma(mu)
+      phi <- object$scale
+      info1 <- t(apply(x, 2, "*", tgmu)) %*% x / phi^2
+      info2 <- t(x) %*% (log(y/phi) - dgmu - mu*tgmu + 1) / phi^2
+      info3 <- sum(mu * (2*dgmu + mu*tgmu - 1 - 2*log(y/phi))) / phi^2
+      info <- rbind(cbind(info1, info2), c(info2, info3))
+      covmat.full <- try(solve(info), silent = TRUE)
+      if(!inherits(covmat.full,"try-error") | all(is.nan(covmat.full))) {
+        covmat.unscaled <- covmat.full[(1:p),(1:p), drop = FALSE]
+        var.phi <- covmat.full[(p+1),(p+1)]
+      } else {
+        covmat.unscaled <- matrix(NaN, p, p)
+        var.phi <- NaN
+      }
     }
     if(!inherits(covmat.unscaled,"try-error") | all(is.nan(covmat.unscaled))) {
       covmat.scaled <- dispersion * covmat.unscaled
@@ -71,8 +90,9 @@ summary.addreg <- function(object, correlation = FALSE, ...) {
     covmat.unscaled <- matrix(NaN, p, p)
     covmat.scaled <- matrix(NaN, p, p)
     coef.table <- cbind(coef.p, NaN, NaN, NaN)
-    if(substr(object$family$family,1,7) == "negbin1") {
-      phi <- object$scale - 1
+    if(substr(object$family$family,1,7) == "negbin1" | 
+       substr(object$family$family,1,6) == "gamma1") {
+      phi <- object$scale - (substr(object$family$family,1,7) == "negbin1")
       var.phi <- NaN
     }
   }
@@ -94,7 +114,8 @@ summary.addreg <- function(object, correlation = FALSE, ...) {
     dd <- sqrt(diag(covmat.unscaled))
     ans$correlation <- covmat.unscaled/outer(dd, dd)
   }
-  if(substr(object$family$family,1,7) == "negbin1") {
+  if(substr(object$family$family,1,7) == "negbin1" | 
+     substr(object$family$family,1,6) == "gamma1") {
     ans$phi <- phi
     ans$var.phi <- var.phi
   }
