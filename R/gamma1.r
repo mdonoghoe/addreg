@@ -7,7 +7,8 @@ gamma1 <- function (link, phi = stop("'phi' must be given"))
   variance <- function(mu) mu * .Phi
   validmu <- function(mu) all(mu >= 0)
   dev.resids <- function(y, mu, wt) {
-    2 * ((y - mu)/.Phi * log(y/.Phi) - lgamma(y/.Phi) + lgamma(mu/.Phi))
+    sy <- .Phi * distr::igamma(log(y / .Phi))
+    2 * ((sy - mu)/.Phi * log(y/.Phi) - lgamma(sy/.Phi) + lgamma(mu/.Phi))
   }
   aic <- function(y, n, mu, wt, dev) -2 * sum(dgamma(y, shape = mu/.Phi, scale = .Phi, log = TRUE))
   initialize <- expression({
