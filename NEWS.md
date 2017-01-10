@@ -1,6 +1,7 @@
 # addreg 3.0 _(in progress)_
 * `method` option added: fit using combinatorial EM or single parameter expanded EM algorithm
 * `accelerate` option added: use `turboEM` to allow acceleration of EM algorithm
+* Corrected an error in the calculation of deviance residuals for `family = negbin1`
 * (Minor change) Change `iter` to return a vector of two values
 
 # addreg 2.0
