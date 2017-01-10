@@ -7,12 +7,17 @@ negbin1 <- function (link, phi = stop("'phi' must be given"))
 	variance <- function(mu) mu * (1 + .Phi)
 	validmu <- function(mu) all(mu >= 0)
 	dev.resids <- function(y, mu, wt) {
-		r <- (mu - y)/.Phi * log(1 + .Phi)
+	  y.un <- unique(y)
+	  mu.un <- rep(NA, y.un)
+	  mu.un[y.un == 0] <- 0
+	  mu.un[y.un == 1] <- .Phi / log(1 + .Phi)
+	  rootfn <- function(mu, y, phi) digamma(y + mu/phi) - digamma(mu/phi) - log(1 + phi)
+	  getroot <- function(y, phi) uniroot(rootfn, c(ifelse(phi <= 1, phi*y, y), phi*y/log(1+phi)), y = y, phi = phi)$root
+	  mu.un[y.un > 1] <- sapply(y.un[y.un > 1], getroot, phi = .Phi)
+	  mu.s <- mu.un[match(y, y.un)]
+		r <- (mu - mu.s)/.Phi * log(1 + .Phi)
 		p <- which(y > 0)
-		r[p] <- r[p] + (mapply(function(Y,m,phi) {
-								k <- seq_len(Y) - 1
-								sum(log((Y/phi + k) / (m/phi + k)))},
-							y[p], mu[p], MoreArgs = list(phi = .Phi)))
+		r[p] <- r[p] + lgamma(y[p] + mu.s[p]/.Phi) - lgamma(mu.s[p]/.Phi) - lgamma(y[p] + mu[p]/.Phi) + lgamma(mu[p]/.Phi)
 		2 * r
 	}
 	aic <- function(y, n, mu, wt, dev) -2 * sum(dnbinom(y, size = mu/.Phi, prob = 1/(1+.Phi), log = TRUE))
