@@ -8,7 +8,7 @@ negbin1 <- function (link, phi = stop("'phi' must be given"))
 	validmu <- function(mu) all(mu >= 0)
 	dev.resids <- function(y, mu, wt) {
 	  y.un <- unique(y)
-	  mu.un <- rep(NA, y.un)
+	  mu.un <- rep(NA, length(y.un))
 	  mu.un[y.un == 0] <- 0
 	  mu.un[y.un == 1] <- .Phi / log(1 + .Phi)
 	  rootfn <- function(mu, y, phi) digamma(y + mu/phi) - digamma(mu/phi) - log(1 + phi)
