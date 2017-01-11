@@ -71,7 +71,8 @@ nngamma <- function(y, x, offset, start, control = addreg.control(),
       if (c.a[j] > bound.tol) {
         t.fit <- estep(c.a.old[j], x[,j], y, a.fit)
         pos <- x[,j] > 0
-        a.max <- max(-2 / (x[pos,j] * (t.fit[pos] - log(c.phi))))
+        pos2 <- pos & (1 - t.fit + log(c.phi) > 0)
+        a.max <- pmax(max(2/(x[pos2,j] * (1 - t.fit[pos2] + log(c.phi)))), bound.tol)
         score.0 <- score(bound.tol / 2, x = x[,j], t.fit = t.fit, phi = c.phi)
         score.max <- score(a.max, x = x[,j], t.fit = t.fit, phi = c.phi)
         if (score.0 <= epsilon) c.a[j] <- 0
@@ -103,8 +104,8 @@ nngamma <- function(y, x, offset, start, control = addreg.control(),
   validparams <- function(p) return(all(p >= 0))
   
   projfn <- function(p) {
-    pnew <- p
-    pnew[p < 0] <- .Machine$double.eps
+    p[p < 0] <- .Machine$double.eps
+    p
   }
   
   conv.user <- function(old, new) return(conv.test(old[1], new[1], tol) &&
