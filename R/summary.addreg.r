@@ -53,12 +53,12 @@ summary.addreg <- function(object, correlation = FALSE, ...) {
       x <- object$x
       y <- object$y
       mu <- object$fitted.values
-      dgmu <- digamma(mu)
-      tgmu <- trigamma(mu)
       phi <- object$scale
+      dgmu <- digamma(mu / phi)
+      tgmu <- trigamma(mu / phi)
       info1 <- t(apply(x, 2, "*", tgmu)) %*% x / phi^2
-      info2 <- t(x) %*% (log(y/phi) - dgmu - mu*tgmu + 1) / phi^2
-      info3 <- sum(mu * (2*dgmu + mu*tgmu - 1 - 2*log(y/phi))) / phi^2
+      info2 <- t(x) %*% (log(y/phi) - dgmu - mu*tgmu/phi + 1) / phi^2
+      info3 <- sum(mu * (mu*tgmu/phi + 2*dgmu - 2*log(y/phi) - 3) + 2 * y) / phi^3
       info <- rbind(cbind(info1, info2), c(info2, info3))
       covmat.full <- try(solve(info), silent = TRUE)
       if(!inherits(covmat.full,"try-error") | all(is.nan(covmat.full))) {
