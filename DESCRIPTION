@@ -7,7 +7,7 @@ Date: 2016-10-26
 Authors@R: c(person("Mark W.", "Donoghoe", email = "markdonoghoe@gmail.com", rol = c("aut","cre")),
              person("Ian C.", "Marschner", rol = "ths"))
 Depends: R (>= 3.0.1)
-Imports: splines, combinat, glm2, turboEM, distr
+Imports: splines, combinat, glm2, turboEM, distr, gsl
 License: GPL (>= 2)
 LazyData: true
 URL: https://github.com/mdonoghoe/addreg

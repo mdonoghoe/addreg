@@ -71,8 +71,7 @@ nngamma <- function(y, x, offset, start, control = addreg.control(),
       if (c.a[j] > bound.tol) {
         t.fit <- estep(c.a.old[j], x[,j], y, a.fit)
         pos <- x[,j] > 0
-        pos2 <- pos & (1 - t.fit + log(c.phi) > 0)
-        a.max <- pmax(max(2/(x[pos2,j] * (1 - t.fit[pos2] + log(c.phi)))), bound.tol)
+        a.max <- pmax(max(1/(x[pos,j]*gsl::lambert_W0(exp(log(c.phi)-t.fit[pos])))), bound.tol)
         score.0 <- score(bound.tol / 2, x = x[,j], t.fit = t.fit, phi = c.phi)
         score.max <- score(a.max, x = x[,j], t.fit = t.fit, phi = c.phi)
         if (score.0 <= epsilon) c.a[j] <- 0
