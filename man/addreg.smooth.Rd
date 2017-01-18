@@ -1,11 +1,11 @@
 \name{addreg.smooth}
 \alias{addreg.smooth}
 \title{
-Smooth Additive Regression for Discrete Data
+Smooth Additive Regression
 }
 \description{
-\code{addreg.smooth} fits additive (identity-link) Poisson, negative binomial
-and binomial regression models using a stable EM algorithm. It provides additional
+\code{addreg.smooth} fits additive (identity-link) Poisson, negative binomial,
+binomial and gamma regression models using a stable EM algorithm. It provides additional
 flexibility over \code{\link{addreg}} by allowing for semi-parametric
 terms.
 }
@@ -43,7 +43,8 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
   of a call to a family function (see
   \code{\link[stats]{family}} for details of family
   functions), but here it is restricted to be \code{\link{poisson}},
-  \code{\link{negbin1}} or \code{\link{binomial}} family with \code{identity} link.
+  \code{\link{negbin1}}, \code{\link{binomial}} or \code{\link{gamma1}}
+  family with \code{identity} link.
 }
   \item{data}{
 	an optional data frame, list or environment
@@ -83,7 +84,8 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
   specified their sum is used. See
   \code{\link{model.offset}}.
   
-	Ignored for binomial family; not yet implemented for negative binomial models.
+	Ignored for binomial family; not yet implemented for negative binomial
+	and gamma models.
 }
   \item{control}{
 	list of parameters for controlling the
@@ -126,7 +128,7 @@ addreg.smooth(formula, mono = NULL, family, data, standard, subset,
 \details{
 \code{addreg.smooth} performs the same fitting process as \code{\link{addreg}},
 providing a stable maximum likelihood estimation procedure for identity-link
-Poisson, negative binomial or binomial models, with the added flexibility of allowing semi-parametric
+Poisson, negative binomial, binomial or gamma models, with the added flexibility of allowing semi-parametric
 \code{\link{B}} and \code{\link{Iso}} terms (note that \code{addreg.smooth} will stop with an 
 error if no semi-parametric terms are specified in the right-hand side of the \code{formula}; 
 \code{\link{addreg}} should be used instead).

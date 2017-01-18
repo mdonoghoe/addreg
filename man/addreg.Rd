@@ -1,15 +1,16 @@
 \name{addreg}
 \alias{addreg}
 \title{
-Additive Regression for Discrete Data
+Additive Regression
 }
 \concept{Binomial regression}
 \concept{Poisson regression}
 \concept{CEM algorithm}
 \concept{Negative binomial regression}
+\concept{Gamma regression}
 \description{
-\code{addreg} fits additive (identity-link) Poisson, negative binomial
- and binomial regression models using a stable combinatorial EM algorithm.
+\code{addreg} fits additive (identity-link) Poisson, negative binomial,
+ binomial and gamma regression models using a stable combinatorial EM algorithm.
 }
 \usage{
 addreg(formula, mono = NULL, family, data, standard, subset, na.action,
@@ -42,7 +43,8 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   of a call to a family function (see
   \code{\link[stats]{family}} for details of family
   functions), but here it is restricted to be \code{\link{poisson}},
-  \code{\link{negbin1}} or \code{\link{binomial}} family with \code{identity} link.
+  \code{\link{negbin1}}, \code{\link{binomial}} or 
+  \code{\link{gamma1}} family with \code{identity} link.
 }
   \item{data}{
 	an optional data frame, list or environment
@@ -58,7 +60,8 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   constant that (multiplicatively) standardises the fitted
   value of the corresponding element of the response
   vector. Ignored for binomial family (two-column
-  specification of response should be used instead).
+  specification of response should be used instead) and
+  gamma1 family.
 }
   \item{subset}{
 	an optional vector specifying a subset of
@@ -76,7 +79,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
 	starting values for the parameters in the
   linear predictor, also with the starting value for
   the \code{scale} as the last element when
-  \code{family = \link{negbin1}}.
+  \code{family = \link{negbin1}} or \code{\link{gamma1}}.
 }
   \item{offset}{
 	this can be used to specify an \emph{a
@@ -88,7 +91,8 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
   specified their sum is used. See
   \code{\link{model.offset}}.
   
-	Ignored for binomial family; not yet implemented for negative binomial models.
+	Ignored for binomial family; not yet implemented for negative binomial 
+	and gamma models.
 }
   \item{control}{
 	list of parameters for controlling the
@@ -131,7 +135,7 @@ addreg(formula, mono = NULL, family, data, standard, subset, na.action,
 \details{
 \code{addreg} fits a generalised linear model (GLM) with a
 Poisson or binomial error distribution and identity link
-function, as well as additive NegBin I models (which are not 
+function, as well as additive NegBin I and Gamma 1 models (which are not 
 GLMs). Predictors are assumed to be continuous, unless
 they are of class \code{\link{factor}}, or are character or
 logical (in which case they are converted to
@@ -206,7 +210,7 @@ knots for smooth terms.}
 for each of the continuous covariates, to help define
 the covariate space of the model.}
 
-As well as, for Poisson and negative binomial models:
+As well as, for Poisson, negative binomial and gamma models:
 \item{nn.coefficients}{estimated coefficients associated
 with the non-negative parameterisation corresponding to the
 MLE.} 
@@ -221,7 +225,7 @@ Poisson model.}
 The \code{scale} component of the result is fixed at \eqn{1} for
 Poisson and binomial models, and is the constant overdispersion parameter
 for negative binomial models (that is, \code{scale} = \eqn{1+\phi}) where 
-\eqn{Var(\mu) = (1+\phi)\mu}).
+\eqn{Var(\mu) = (1+\phi)\mu}) and gamma models (\eqn{Var(\mu) = \phi\mu}).
 }
 \references{
 Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods
