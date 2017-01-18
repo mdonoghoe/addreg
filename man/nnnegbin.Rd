@@ -88,6 +88,10 @@ space --- i.e. are any of the \code{coefficients < control$bound.tol}?}
 \item{nn.design}{the non-negative \code{x} matrix used.}
 }
 \references{
+Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate
+differences using additive negative binomial regression. \emph{Statistics
+in Medicine} 35(18): 3166--3178.
+
 Hurvich, C. M., J. S. Simonoff and C.-L. Tsai (1998). Smoothing parameter 
 selection in non-parametric regression using an improved Akaike 
 information criterion.

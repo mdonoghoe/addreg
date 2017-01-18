@@ -170,8 +170,8 @@ space, and the EM algorithm is applied within each
 restricted parameter space in order to find a collection of
 restricted maxima of the log-likelihood function, from
 which can be obtained the global maximum over the full
-parameter space. See Marschner (2010) and Donoghoe and 
-Marschner (2014) for further details.
+parameter space. See Marschner (2010), Donoghoe and 
+Marschner (2014) and Donoghoe and Marschner (2016) for further details.
 
 Acceleration of the EM algorithm can be achieved through the
 methods of the \pkg{\link[turboEM:turboem]{turboEM}} package, specified
@@ -227,6 +227,10 @@ for negative binomial models (that is, \code{scale} = \eqn{1+\phi}) where
 Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods
 for additive binomial models with application to adjusted risk differences. 
 \emph{Computational Statistics and Data Analysis} 80: 184--196.
+
+Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate
+differences using additive negative binomial regression. \emph{Statistics
+in Medicine} 35(18): 3166--3178.
 
 Hurvich, C. M., J. S. Simonoff and C.-L. Tsai (1998). Smoothing parameter 
 selection in nonparametric regression using an improved Akaike 

@@ -58,6 +58,10 @@ Donoghoe, M. W. and I. C. Marschner (2015). Flexible regression models for rate
 differences, risk differences and relative risks. \emph{International Journal of 
 Biostatistics} 11(1): 91--108.
 
+Donoghoe, M. W. and I. C. Marschner (2016). Estimation of adjusted rate
+differences using additive negative binomial regression. \emph{Statistics
+in Medicine} 35(18): 3166--3178.
+
 Marschner, I. C. (2010). Stable computation of maximum likelihood estimates
 in identity link Poisson regression. \emph{Journal of Computational and 
 Graphical Statistics} 19(3): 666--683.
