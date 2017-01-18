@@ -1,4 +1,5 @@
 # addreg 3.0 _(in progress)_
+* Added additive gamma regression (`family = gamma1`)
 * `method` option added: fit using combinatorial EM or single parameter expanded EM algorithm
 * `accelerate` option added: use `turboEM` to allow acceleration of EM algorithm
 * Corrected an error in the calculation of deviance residuals for `family = negbin1`

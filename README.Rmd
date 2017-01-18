@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/addreg)](https://cran.r-project.org/package=addreg)
 
-`addreg` provides methods for fitting identity-link GLMs and GAMs to discrete data, using EM-type algorithms with more stable convergence properties than standard methods.
+`addreg` provides methods for fitting identity-link GLMs and GAMs, using EM-type algorithms with more stable convergence properties than standard methods.
 
 An example of periodic non-convergence using `glm` (run with `trace = TRUE` to see deviance at each iteration):
 
@@ -64,7 +64,7 @@ rownames(res) <- c("glm", "cem", "em", "cem.acc", "em.acc")
 res
 ```
 
-The combinatorial EM algorithms for identity-link binomial (Donoghoe and Marschner, 2014) and negative binomial (Donoghoe and Marschner, 2016) models are also available, using `family = binomial` and `family = negbin1`, respectively.
+The combinatorial EM algorithms for identity-link binomial (Donoghoe and Marschner, 2014), negative binomial (Donoghoe and Marschner, 2016) and gamma models are also available, using `family = binomial`, `family = negbin1` and `family = gamma1`, respectively.
 
 Semi-parametric regression using B-splines (Donoghoe and Marschner, 2015) can be incorporated by using the `addreg.smooth` function. See `example(addreg.smooth)` for a simple example.
 

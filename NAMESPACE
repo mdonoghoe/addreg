@@ -4,12 +4,12 @@ importFrom("graphics", "abline", "lines", "plot")
 importFrom("stats", ".MFclass", ".checkMFClasses", ".getXlevels",
              "as.formula", "binomial", "coef", "confint.default",
              "contr.treatment", "contrasts<-", "delete.response",
-             "dnbinom", "dpois", "family", "fitted", "formula",
+             "dgamma", "dnbinom", "dpois", "family", "fitted", "formula",
              "get_all_vars", "glm.fit", "is.empty.model", "make.link",
              "model.extract", "model.frame", "model.matrix",
              "model.offset", "model.response", "na.pass", "napredict",
              "naprint", "pnorm", "poisson", "predict", "printCoefmat",
-             "quantile", "reformulate", "relevel", "residuals",
+             "quantile", "reformulate", "relevel", "residuals", "rgamma",
              "rnbinom", "setNames", "stat.anova", "terms",
              "terms.formula", "uniroot", "update")
 S3method(confint,addreg)
