@@ -164,8 +164,15 @@ nnnegbin <- function(y, x, standard, offset, start, control = addreg.control(),
   aic.model <- fam$aic(y, nobs, mu, weights, dev.new) + 2 * (nvars + 1)
   aic.c.model <- aic.model + 2 * (nvars + 1) * (nvars + 2) / (nobs - nvars - 1)
   
-  wtdmu <- standard * rep(sum(weights * y / standard) / sum(weights), nobs)
-  nulldev <- sum(fam$dev.resids(y, wtdmu, weights))
+  nullscore <- function(r, y, p) sum(digamma(y + r)) - length(y) * (digamma(r) - log(1 - p))
+  nullscore.0 <- nullscore(control$bound.tol / 2, y, coefnew.p)
+  maxr <- mean(y) / log(1 / (1 - coefnew.p))
+  nullscore.max <- nullscore(maxr, y, coefnew.p)
+  nullr <- uniroot(nullscore, interval = c(control$bound.tol / 2, maxr), 
+                   y = y, p = coefnew.p, f.lower = nullscore.0, f.upper = nullscore.max,
+                   tol = control$epsilon * 1e-2)$root
+  nullmu <- rep(coefnew.phi * nullr, nobs)
+  nulldev <- sum(fam$dev.resids(y, nullmu, weights))
   nulldf <- nobs - 1
   resdf <- nobs - nvars - 1
   
