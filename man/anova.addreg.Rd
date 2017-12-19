@@ -55,7 +55,7 @@ An object of class \code{"anova"} inheriting from class
 \code{"data.frame"}.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \section{Warning}{
   The comparison between two or more models will only be

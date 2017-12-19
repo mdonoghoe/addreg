@@ -98,6 +98,6 @@ information criterion.
 \emph{Journal of the Royal Statistical Society: Series B (Statistical Methodology)} 60(2): 271--293.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}.
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}.
 }
 \keyword{ regression }

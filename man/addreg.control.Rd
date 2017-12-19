@@ -56,7 +56,7 @@ A list with components named as the arguments.
 }
 
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 
 \seealso{

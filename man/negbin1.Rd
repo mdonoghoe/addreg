@@ -40,6 +40,6 @@ a model, this \code{family} object must be reloaded using the new
 estimate.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \keyword{ models }

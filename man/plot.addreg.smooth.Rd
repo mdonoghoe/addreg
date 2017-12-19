@@ -51,7 +51,7 @@ covariates, \code{at} may be provided as an empty data frame, \code{data.frame()
 The function simply generates plots.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \note{
 If this function is too restrictive, it may be easier to use \code{\link{predict.addreg.smooth}}

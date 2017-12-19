@@ -75,7 +75,7 @@ For negative binomial models, the object also contains
 \item{var.phi}{the estimated variance of \code{phi}.}
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \note{
 If \code{object$boundary == TRUE}, the standard errors of the coefficients

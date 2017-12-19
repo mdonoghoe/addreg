@@ -100,7 +100,7 @@ and applications in clinical epidemiology. \emph{Computational
 Statistics and Data Analysis} 56(5): 1115--1130.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}.
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}.
 
 This function is based on code from Marschner, Gillett and O'Connell (2012) written by Alexandra Gillett.
 }

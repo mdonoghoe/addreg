@@ -67,7 +67,7 @@ A matrix with \code{n} rows and \code{k} columns, with
 \code{k=n} if \code{contrasts} is \code{FALSE}.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \seealso{
 \code{\link{model.matrix}}, which uses
