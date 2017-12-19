@@ -12,8 +12,8 @@ algorithms with more stable convergence properties than standard methods.
 \tabular{ll}{
 Package: \tab addreg\cr
 Type: \tab Package\cr
-Version: \tab 3.0.9000\cr
-Date: \tab 2016-10-26\cr
+Version: \tab 3.0\cr
+Date: \tab 2017-12-20\cr
 License: \tab GPL (>= 2)\cr
 }
 This package provides methods to fit generalised linear models (GLMs) and generalised additive
@@ -45,9 +45,9 @@ In either case, the EM algorithm may be accelerated by using the capabilities of
 \pkg{\link[turboEM:turboem]{turboEM}} package.
 }
 \author{
-Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 
-Maintainer: Mark W. Donoghoe \email{Mark.Donoghoe@mq.edu.au}
+Maintainer: Mark W. Donoghoe \email{markdonoghoe@gmail.com}
 }
 \references{
 Donoghoe, M. W. and I. C. Marschner (2014). Stable computational methods
